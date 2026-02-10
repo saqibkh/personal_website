@@ -16,22 +16,22 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://khansaqib.com/projects/misc/calculator</loc>
-    <lastmod>2026-02-10</lastmod>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
     <loc>https://khansaqib.com/projects/misc/advanced_browser_system_benchmark</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://khansaqib.com/projects/misc/geolocation</loc>
+    <loc>https://khansaqib.com/projects/misc/calculator</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://khansaqib.com/projects/misc/deciscope</loc>
+    <lastmod>2026-02-10</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://khansaqib.com/projects/misc/geolocation</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
   </url>

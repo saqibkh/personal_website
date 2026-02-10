@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Saqib | Professional Calculator</title>
+    <meta name="description" content="Scientific & Programmer Web Calculator.">
+    
+    <link rel="stylesheet" href="../../../../../static/style.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">KHAN SAQIB.</div>
+        <ul class="nav-links">
+            <li><a href="/">About</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/apps">Apps</a></li>
+            <li><a href="/#contact" class="btn-primary">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="projects-section">
+        <div class="container" style="padding-top: 80px;">
+            
+            <div class="calc-wrapper">
+                <div class="calc-container" id="calcContainer">
+                    
+                    <div class="mode-tabs">
+                        <button class="mode-tab active" onclick="setMode('standard')">Standard</button>
+                        <button class="mode-tab" onclick="setMode('scientific')">Scientific</button>
+                        <button class="mode-tab" onclick="setMode('programmer')">Programmer</button>
+                    </div>
+
+                    <div class="calc-screen">
+                        <div class="calc-history" id="history"></div>
+                        <div class="calc-output" id="display">0</div>
+                    </div>
+
+                    <div class="base-switch-container" id="baseSwitcher">
+                        <div class="base-row" id="rowHex" onclick="setBase(16)">
+                            <span class="base-label">HEX</span><span class="base-val" id="valHex">0</span>
+                        </div>
+                        <div class="base-row active" id="rowDec" onclick="setBase(10)">
+                            <span class="base-label">DEC</span><span class="base-val" id="valDec">0</span>
+                        </div>
+                        <div class="base-row" id="rowOct" onclick="setBase(8)">
+                            <span class="base-label">OCT</span><span class="base-val" id="valOct">0</span>
+                        </div>
+                        <div class="base-row" id="rowBin" onclick="setBase(2)">
+                            <span class="base-label">BIN</span><span class="base-val" id="valBin">0</span>
+                        </div>
+                    </div>
+
+                    <div class="keypad" id="keypad">
+                        
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('sin')">sin</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('cos')">cos</button>
+                        <button class="btn-calc btn-hex prog-key" data-key="A" onclick="insert('A')">A</button>
+                        <button class="btn-calc btn-hex prog-key" data-key="B" onclick="insert('B')">B</button>
+                        
+                        <button class="btn-calc btn-clear" data-key="Escape" onclick="clearDisplay()">AC</button>
+                        <button class="btn-calc btn-clear" data-key="Backspace" onclick="deleteChar()">⌫</button>
+                        <button class="btn-calc btn-op" data-key="%" onclick="insert('%')">%</button>
+                        <button class="btn-calc btn-op" data-key="/" onclick="insert('/')">÷</button>
+
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('tan')">tan</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('asin')">sin⁻¹</button>
+                        <button class="btn-calc btn-hex prog-key" data-key="C" onclick="insert('C')">C</button>
+                        <button class="btn-calc btn-hex prog-key" data-key="D" onclick="insert('D')">D</button>
+
+                        <button class="btn-calc num-key" data-key="7" onclick="insert('7')">7</button>
+                        <button class="btn-calc num-key" data-key="8" onclick="insert('8')">8</button>
+                        <button class="btn-calc num-key" data-key="9" onclick="insert('9')">9</button>
+                        <button class="btn-calc btn-op" data-key="*" onclick="insert('*')">×</button>
+
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('acos')">cos⁻¹</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('atan')">tan⁻¹</button>
+                        <button class="btn-calc btn-hex prog-key" data-key="E" onclick="insert('E')">E</button>
+                        <button class="btn-calc btn-hex prog-key" data-key="F" onclick="insert('F')">F</button>
+
+                        <button class="btn-calc num-key" data-key="4" onclick="insert('4')">4</button>
+                        <button class="btn-calc num-key" data-key="5" onclick="insert('5')">5</button>
+                        <button class="btn-calc num-key" data-key="6" onclick="insert('6')">6</button>
+                        <button class="btn-calc btn-op" data-key="-" onclick="insert('-')">−</button>
+
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('ln')">ln</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('log')">log</button>
+                        <button class="btn-calc btn-hex prog-key" onclick="insert('(')">(</button>
+                        <button class="btn-calc btn-hex prog-key" onclick="insert(')')">)</button>
+
+                        <button class="btn-calc num-key" data-key="1" onclick="insert('1')">1</button>
+                        <button class="btn-calc num-key" data-key="2" onclick="insert('2')">2</button>
+                        <button class="btn-calc num-key" data-key="3" onclick="insert('3')">3</button>
+                        <button class="btn-calc btn-op" data-key="+" onclick="insert('+')">+</button>
+
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('pi')">π</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('sqrt')">√</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('pow')">x^y</button>
+                        <button class="btn-calc btn-hex prog-key" disabled></button> 
+                        <button class="btn-calc btn-hex prog-key" disabled></button> 
+
+                        <button class="btn-calc num-key" onclick="toggleSign()">±</button>
+                        <button class="btn-calc num-key" data-key="0" onclick="insert('0')">0</button>
+                        <button class="btn-calc num-key" data-key="." id="btnDot" onclick="insert('.')">.</button>
+                        <button class="btn-calc btn-eq" data-key="Enter" onclick="calculate()">=</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <h2>Let's build something together.</h2>
+            <p>Open for opportunities in software development and technical consulting.</p>
+            <a href="mailto:saqibkhan@utexas.edu" class="email-link">saqibkhan@utexas.edu</a>
+            <div class="copyright">
+                &copy; 2026 Khan Saqib. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

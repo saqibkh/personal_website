@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Saqib | Pro Geolocation</title>
+    <meta name="description" content="Professional real-time tracking dashboard.">
+    
+    <link rel="stylesheet" href="../../../../../static/style.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+     
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">KHAN SAQIB.</div>
+        <ul class="nav-links">
+            <li><a href="/">About</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/apps">Apps</a></li>
+            <li><a href="/#contact" class="btn-primary">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div id="map"></div>
+
+    <section class="ui-layer">
+        
+        <div class="geo-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Location Tracker</h2>
+                <div class="live-badge" id="liveBadge">
+                    <span class="pulse-dot"></span> LIVE
+                </div>
+            </div>
+            
+            <p class="panel-desc">Real-time telemetry & route mapping.</p>
+
+            <div class="map-toggles">
+                <button class="toggle-btn active" onclick="setMapStyle('dark')">Dark</button>
+                <button class="toggle-btn" onclick="setMapStyle('light')">Light</button>
+                <button class="toggle-btn" onclick="setMapStyle('sat')">Sat</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">LATITUDE</span>
+                    <span class="stat-val" id="valLat">--.---</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">LONGITUDE</span>
+                    <span class="stat-val" id="valLng">--.---</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">SPEED (km/h)</span>
+                    <span class="stat-val highlight" id="valSpeed">0.0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">DIST (km)</span>
+                    <span class="stat-val highlight" id="valDist">0.00</span>
+                </div>
+                <div class="stat-card full-width">
+                    <span class="stat-label">LAST UPDATE</span>
+                    <span class="stat-val small" id="valTime">Waiting for signal...</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-geo start" id="btnStart" onclick="startTracking()">
+                    <span class="icon">▶</span> Start Tracking
+                </button>
+                <button class="btn-geo stop" id="btnStop" onclick="stopTracking()" disabled>
+                    <span class="icon">■</span> Stop
+                </button>
+                <button class="btn-geo export" id="btnExport" onclick="exportData()" disabled>
+                    <span class="icon">↓</span> Export JSON
+                </button>
+            </div>
+            
+            <button class="btn-recenter" onclick="recenterMap()">
+                Target Location ⌖
+            </button>
+        </div>
+
+        <div class="map-overlay" id="mapOverlay">
+            <div class="overlay-content">
+                <h3>Ready to Track</h3>
+                <p>Click "Start Tracking" to initialize satellite connection.</p>
+            </div>
+        </div>
+
+    </section>
+
+    <footer id="contact" style="position: relative; z-index: 1000; background: #0a0a0a;">
+        <div class="container">
+            <h2>Let's build something together.</h2>
+            <p>Open for opportunities in software development and technical consulting.</p>
+            <a href="mailto:saqibkhan@utexas.edu" class="email-link">saqibkhan@utexas.edu</a>
+            <div class="copyright">
+                &copy; 2026 Khan Saqib. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+     
+    <script src="script.js"></script>
+
+</body>
+</html>

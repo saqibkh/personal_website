@@ -1,0 +1,227 @@
+/* --- CALCULATOR CONTAINER --- */
+.calc-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-bottom: 4rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.calc-container {
+    width: 100%;
+    max-width: 380px; /* Standard Mode Width */
+    background: #18181b; /* Darker, modern background */
+    border-radius: 24px; /* Apple-like rounded corners */
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+    padding: 20px; /* Internal padding for floating look */
+    border: 1px solid #333;
+    transition: max-width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Wider container for Sci/Prog modes */
+.calc-container.wide-mode {
+    max-width: 620px;
+}
+
+/* --- SCREEN AREA --- */
+.calc-screen {
+    background: transparent; /* Seamless look */
+    color: #fff;
+    padding: 0 10px 20px 10px;
+    text-align: right;
+    border-bottom: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+.calc-history {
+    font-size: 0.9rem;
+    color: #a1a1aa;
+    min-height: 1.5rem;
+    margin-bottom: 0.2rem;
+    font-weight: 500;
+}
+
+.calc-output {
+    font-size: 3.5rem;
+    font-weight: 300;
+    line-height: 1.1;
+    word-break: break-all;
+    letter-spacing: -1px;
+}
+
+/* --- TABS --- */
+.mode-tabs {
+    display: flex;
+    background: #27272a;
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+}
+
+.mode-tab {
+    flex: 1;
+    padding: 8px;
+    background: none;
+    border: none;
+    color: #a1a1aa;
+    cursor: pointer;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.mode-tab:hover {
+    color: #fff;
+}
+
+.mode-tab.active {
+    color: #fff;
+    background: #3f3f46;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* --- BASE SWITCHER (Programmer) --- */
+.base-switch-container {
+    display: none;
+    background: #202022;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+}
+
+.base-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    cursor: pointer;
+    color: #71717a;
+    font-family: 'Inter', monospace;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    transition: 0.2s;
+}
+
+.base-row:hover { background: #27272a; color: #fff; }
+.base-row.active { color: var(--accent, #3b82f6); background: rgba(59, 130, 246, 0.1); font-weight: 700; }
+.base-label { font-weight: 700; }
+.base-val { font-family: monospace; }
+
+/* --- KEYPAD GRID --- */
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Standard Grid */
+    gap: 12px; /* Gaps between buttons */
+}
+
+/* 6 Columns for Scientific / Programmer */
+.keypad.scientific-grid,
+.keypad.programmer-grid {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+/* --- BUTTONS --- */
+.btn-calc {
+    background: #27272a; /* Dark Grey */
+    border: none;
+    height: 60px;
+    border-radius: 14px; /* Rounded Buttons */
+    font-size: 1.25rem;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2); /* Subtle 3D effect */
+}
+
+.btn-calc:active, .btn-calc.pressed {
+    transform: translateY(2px);
+    box-shadow: none;
+    background: #3f3f46;
+}
+
+.btn-calc:hover {
+    background: #3f3f46;
+}
+
+/* --- BUTTON TYPES --- */
+
+/* Numbers */
+.num-key {
+    background: #27272a;
+    font-weight: 400;
+}
+
+/* Operators (Accent Color) */
+.btn-op {
+    background: rgba(59, 130, 246, 0.15); /* Tinted Accent */
+    color: var(--accent, #3b82f6);
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+.btn-op:hover { background: rgba(59, 130, 246, 0.3); }
+
+/* Equals Button (Solid Accent) */
+.btn-eq {
+    background: var(--accent, #3b82f6);
+    color: #fff;
+    font-weight: 700;
+}
+.btn-eq:hover { background: #2563eb; }
+
+/* Clear/Delete (Red tint) */
+.btn-clear {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.btn-clear:hover { background: rgba(239, 68, 68, 0.25); }
+
+/* Scientific Keys (Subtle) */
+.btn-sci {
+    background: #18181b; /* Darker than numbers to visually recede */
+    color: #a1a1aa;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: none;
+    border: 1px solid #27272a;
+}
+.btn-sci:hover { color: #fff; border-color: #52525b; }
+
+/* Programmer Keys (Purple Tint) */
+.btn-hex {
+    background: #18181b;
+    color: #c084fc;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid #27272a;
+    box-shadow: none;
+}
+.btn-hex:hover { border-color: #c084fc; }
+
+.btn-calc:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Visibility Helpers */
+.sci-key, .prog-key { display: none; }
+.sci-key.visible, .prog-key.visible { display: flex; } /* Flex to center text */
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .calc-container { padding: 15px; border-radius: 20px; }
+    .btn-calc { height: 50px; font-size: 1rem; border-radius: 10px; }
+    .keypad { gap: 8px; }
+    .calc-output { font-size: 2.5rem; }
+}

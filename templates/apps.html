@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="projects-section">
+    <div class="container" style="padding-top: 80px;">
+        
+        <h2 class="section-title">Android Applications</h2>
+        <div class="project-grid">
+            {% for app in apps.android %}
+            <div class="project-card">
+                <span class="project-tag" style="color: #3ddc84;">{{ app.tag }}</span>
+                <h3>{{ app.name }}</h3>
+                <p>{{ app.desc }}</p>
+                <a href="{{ app.link }}" class="project-link">View on Play Store →</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <br><br><br>
+
+        <h2 class="section-title">iOS Applications</h2>
+        {% if apps.ios %}
+            <div class="project-grid">
+                {% for app in apps.ios %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p style="color: var(--text-muted);">Currently working on new iOS experiences. Check back soon.</p>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

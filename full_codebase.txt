@@ -28,7 +28,7 @@ SOFTWARE.
 ==================================================
 FILE: ./app.py
 ==================================================
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__)
 
@@ -87,25 +87,55 @@ PROJECTS = [
         "name": "Pantheon",
         "tag": "Hardware & Performance",
         "desc": "A GPU workload stress-testing tool designed to push hardware limits and analyze performance stability.",
-        "link": "#"
+        "link": "https://saqibkh.github.io/pantheon"
     },
     {
         "name": "Muslim Name Vault",
         "tag": "Web & Data",
         "desc": "A comprehensive, SEO-optimized database for Muslim baby names, built with Python automation.",
-        "link": "#"
+        "link": "https://muslimnamevault.com"
     },
     {
         "name": "ISA Database",
         "tag": "Computer Architecture",
         "desc": "A web-based resource documenting Instruction Set Architectures for educational and technical reference.",
-        "link": "#"
+        "link": "https://instructionsets.com"
     },
     {
-        "name": "Algorithmic Trading Bot",
-        "tag": "FinTech",
-        "desc": "Automated trading strategies implemented in Python using the Alpaca API for real-time market execution.",
-        "link": "#"
+        "name": "Cloud Sound YouTube Channel",
+        "tag": "Youtube Channel",
+        "desc": "",
+        "link": "https://www.youtube.com/@Cloud__Sound"
+    },
+    {
+        "name": "Intelligence Lab YouTube Channel",
+        "tag": "Youtube Channel",
+        "desc": "Tech and Engineering educational content.",
+        "link": "https://www.youtube.com/@Intelligence_Lab_SK"
+    },
+    {
+        "name": "Advanced Browser System Benchmark",
+        "tag": "Web Application",
+        "desc": "Analyze your browser's capabilities and system performance with this comprehensive benchmark tool.",
+        "link": "/projects/misc/advanced_browser_system_benchmark/"
+    },
+    {
+        "name": "Calculator",
+        "tag": "Web Application",
+        "desc": "All-in-one calculator web utility. Standard, Scientific & Programmer modes with customizable themes.",
+        "link": "/projects/misc/calculator/"
+    },
+    {
+        "name": "Deciscope",
+        "tag": "Web Application",
+        "desc": "",
+        "link": "/projects/misc/deciscope/"
+    },
+    {
+        "name": "Geolocation",
+        "tag": "Web Application",
+        "desc": "Precise geolocation tool for tracking coordinates and mapping routes.",
+        "link": "/projects/misc/geolocation/"
     }
 ]
 
@@ -121,17 +151,23 @@ APPS = {
     "ios": []
 }
 
+
 @app.route('/')
 def home():
     return render_template('index.html', title="About Me", bio=BIO, experience=EXPERIENCE, education=EDUCATION, skills=SKILLS)
 
-@app.route('/projects.html')
+@app.route('/projects')  # Changed from /projects.html
 def projects():
     return render_template('projects.html', title="Projects", projects=PROJECTS)
 
-@app.route('/apps.html')
+@app.route('/apps')      # Changed from /apps.html
 def apps():
     return render_template('apps.html', title="Apps", apps=APPS)
+
+@app.route('/projects/misc/<path:filename>')
+def serve_projects(filename):
+    # This serves the HTML/CSS/JS files from your static_pages folder
+    return send_from_directory('static_pages/projects/misc', filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -365,12 +401,18 @@ os.makedirs('docs')
 print("📂 Copying static files...")
 shutil.copytree('static', 'docs/static')
 
+# --- NEW STEP: Copy Standalone Projects ---
+print("📂 Copying standalone projects...")
+# This merges your static_pages into docs so URLs match perfectly
+shutil.copytree('static_pages', 'docs', dirs_exist_ok=True) 
+# ----------------------------------------
+
 # 3. Generate HTML Pages
 client = app.test_client()
 pages = [
     ('/', 'docs/index.html'),
-    ('/projects.html', 'docs/projects.html'),
-    ('/apps.html', 'docs/apps.html')
+    ('/projects', 'docs/projects.html'),
+    ('/apps', 'docs/apps.html')
 ]
 
 print("⚙️  Generating pages...")
@@ -393,6 +435,290 @@ FILE: ./README.md
 # personal_website
 
 ==================================================
+FILE: ./static_pages/projects/misc/advanced_browser_system_benchmark/index.html
+==================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Browser System Benchmark</title>
+<meta name="description" content="Performance testing tool for web browsers.">
+<link rel="stylesheet" href="/assets/css/styles.css"> 
+</head>
+<body>
+<header><h1>Advanced Browser System Benchmark</h1></header>
+
+
+<nav>
+    <a href="/">About Me</a>
+    <a href="/projects/">Projects</a>
+    <a href="/apps/">Apps</a>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark</button>
+</nav>
+
+<script>
+    const currentTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (currentTheme == 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    } else if (currentTheme == 'light') {
+        document.body.setAttribute('data-theme', 'light');
+        toggleBtn.textContent = '🌙 Dark';
+    } else if (prefersDarkScheme.matches) {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        let theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 Dark';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ Light';
+        }
+    });
+</script>
+
+
+<section>
+    <div class="card">
+        
+        <p>Performance testing tool for web browsers.</p>
+        <p>Analyze your browser's capabilities and system performance with this comprehensive benchmark tool.</p>
+        <p>Visit: <a href="/projects/misc/advanced_browser_system_benchmark/" target="_blank">Run Benchmark</a></p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Saqib Khan | <a href="https://github.com/saqibkh" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank">LinkedIn</a>
+</footer>
+</body>
+</html>
+
+
+==================================================
+FILE: ./static_pages/projects/misc/deciscope/index.html
+==================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deciscope</title>
+<meta name="description" content="Advanced decision-making utility.">
+<link rel="stylesheet" href="/assets/css/styles.css"> 
+</head>
+<body>
+<header><h1>Deciscope</h1></header>
+
+
+<nav>
+    <a href="/">About Me</a>
+    <a href="/projects/">Projects</a>
+    <a href="/apps/">Apps</a>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark</button>
+</nav>
+
+<script>
+    const currentTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (currentTheme == 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    } else if (currentTheme == 'light') {
+        document.body.setAttribute('data-theme', 'light');
+        toggleBtn.textContent = '🌙 Dark';
+    } else if (prefersDarkScheme.matches) {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        let theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 Dark';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ Light';
+        }
+    });
+</script>
+
+
+<section>
+    <div class="card">
+        
+        <p>Advanced decision-making utility.</p>
+        <p>Analyze options and criteria to make better decisions.</p>
+        <p>Visit: <a href="/projects/misc/deciscope/" target="_blank">View Project</a></p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Saqib Khan | <a href="https://github.com/saqibkh" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank">LinkedIn</a>
+</footer>
+</body>
+</html>
+
+
+==================================================
+FILE: ./static_pages/projects/misc/geolocation/index.html
+==================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geolocation</title>
+<meta name="description" content="Location tracking and mapping tool.">
+<link rel="stylesheet" href="/assets/css/styles.css"> 
+</head>
+<body>
+<header><h1>Geolocation</h1></header>
+
+
+<nav>
+    <a href="/">About Me</a>
+    <a href="/projects/">Projects</a>
+    <a href="/apps/">Apps</a>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark</button>
+</nav>
+
+<script>
+    const currentTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (currentTheme == 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    } else if (currentTheme == 'light') {
+        document.body.setAttribute('data-theme', 'light');
+        toggleBtn.textContent = '🌙 Dark';
+    } else if (prefersDarkScheme.matches) {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        let theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 Dark';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ Light';
+        }
+    });
+</script>
+
+
+<section>
+    <div class="card">
+        
+        <p>Location tracking and mapping tool.</p>
+        <p>Precise geolocation tool for tracking coordinates and mapping routes.</p>
+        <p>Visit: <a href="/projects/misc/geolocation/" target="_blank">View Project</a></p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Saqib Khan | <a href="https://github.com/saqibkh" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank">LinkedIn</a>
+</footer>
+</body>
+</html>
+
+
+==================================================
+FILE: ./static_pages/projects/misc/calclator/index.html
+==================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<meta name="description" content="All-in-one calculator web utility.">
+<link rel="stylesheet" href="/assets/css/styles.css"> 
+</head>
+<body>
+<header><h1>Calculator</h1></header>
+
+
+<nav>
+    <a href="/">About Me</a>
+    <a href="/projects/">Projects</a>
+    <a href="/apps/">Apps</a>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark</button>
+</nav>
+
+<script>
+    const currentTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (currentTheme == 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    } else if (currentTheme == 'light') {
+        document.body.setAttribute('data-theme', 'light');
+        toggleBtn.textContent = '🌙 Dark';
+    } else if (prefersDarkScheme.matches) {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        let theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 Dark';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ Light';
+        }
+    });
+</script>
+
+
+<section>
+    <div class="card">
+        
+        <p>All-in-one calculator web utility.</p>
+        <p>Standard, Scientific & Programmer modes with customizable themes.</p>
+        <p>Visit: <a href="/projects/misc/calculator/" target="_blank">View Project</a></p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Saqib Khan | <a href="https://github.com/saqibkh" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank">LinkedIn</a>
+</footer>
+</body>
+</html>
+
+
+==================================================
 FILE: ./docs/projects.html
 ==================================================
 <!DOCTYPE html>
@@ -409,9 +735,9 @@ FILE: ./docs/projects.html
     <nav class="navbar">
         <div class="logo">KHAN SAQIB.</div>
         <ul class="nav-links">
-            <li><a href="index.html" class="">About</a></li>
-            <li><a href="projects.html" class="active">Projects</a></li>
-            <li><a href="apps.html" class="">Apps</a></li>
+	    <li><a href="/" class="">About</a></li>
+            <li><a href="/projects" class="active">Projects</a></li>
+            <li><a href="/apps" class="">Apps</a></li>
             <li><a href="#contact" class="btn-primary">Contact</a></li>
         </ul>
     </nav>
@@ -426,28 +752,63 @@ FILE: ./docs/projects.html
                 <span class="project-tag">Hardware &amp; Performance</span>
                 <h3>Pantheon</h3>
                 <p>A GPU workload stress-testing tool designed to push hardware limits and analyze performance stability.</p>
-                <a href="#" class="project-link">View Project →</a>
+                <a href="https://saqibkh.github.io/pantheon" class="project-link">View Project →</a>
             </div>
             
             <div class="project-card">
                 <span class="project-tag">Web &amp; Data</span>
                 <h3>Muslim Name Vault</h3>
                 <p>A comprehensive, SEO-optimized database for Muslim baby names, built with Python automation.</p>
-                <a href="#" class="project-link">View Project →</a>
+                <a href="https://muslimnamevault.com" class="project-link">View Project →</a>
             </div>
             
             <div class="project-card">
                 <span class="project-tag">Computer Architecture</span>
                 <h3>ISA Database</h3>
                 <p>A web-based resource documenting Instruction Set Architectures for educational and technical reference.</p>
-                <a href="#" class="project-link">View Project →</a>
+                <a href="https://instructionsets.com" class="project-link">View Project →</a>
             </div>
             
             <div class="project-card">
-                <span class="project-tag">FinTech</span>
-                <h3>Algorithmic Trading Bot</h3>
-                <p>Automated trading strategies implemented in Python using the Alpaca API for real-time market execution.</p>
-                <a href="#" class="project-link">View Project →</a>
+                <span class="project-tag">Youtube Channel</span>
+                <h3>Cloud Sound YouTube Channel</h3>
+                <p></p>
+                <a href="https://www.youtube.com/@Cloud__Sound" class="project-link">View Project →</a>
+            </div>
+            
+            <div class="project-card">
+                <span class="project-tag">Youtube Channel</span>
+                <h3>Intelligence Lab YouTube Channel</h3>
+                <p>Tech and Engineering educational content.</p>
+                <a href="https://www.youtube.com/@Intelligence_Lab_SK" class="project-link">View Project →</a>
+            </div>
+            
+            <div class="project-card">
+                <span class="project-tag">Web Application</span>
+                <h3>Advanced Browser System Benchmark</h3>
+                <p>Analyze your browser&#39;s capabilities and system performance with this comprehensive benchmark tool.</p>
+                <a href="/projects/misc/advanced_browser_system_benchmark/" class="project-link">View Project →</a>
+            </div>
+            
+            <div class="project-card">
+                <span class="project-tag">Web Application</span>
+                <h3>Calculator</h3>
+                <p>All-in-one calculator web utility. Standard, Scientific &amp; Programmer modes with customizable themes.</p>
+                <a href="/projects/misc/calculator/" class="project-link">View Project →</a>
+            </div>
+            
+            <div class="project-card">
+                <span class="project-tag">Web Application</span>
+                <h3>Deciscope</h3>
+                <p></p>
+                <a href="/projects/misc/deciscope/" class="project-link">View Project →</a>
+            </div>
+            
+            <div class="project-card">
+                <span class="project-tag">Web Application</span>
+                <h3>Geolocation</h3>
+                <p>Precise geolocation tool for tracking coordinates and mapping routes.</p>
+                <a href="/projects/misc/geolocation/" class="project-link">View Project →</a>
             </div>
             
         </div>
@@ -486,9 +847,9 @@ FILE: ./docs/index.html
     <nav class="navbar">
         <div class="logo">KHAN SAQIB.</div>
         <ul class="nav-links">
-            <li><a href="index.html" class="active">About</a></li>
-            <li><a href="projects.html" class="">Projects</a></li>
-            <li><a href="apps.html" class="">Apps</a></li>
+	    <li><a href="/" class="active">About</a></li>
+            <li><a href="/projects" class="">Projects</a></li>
+            <li><a href="/apps" class="">Apps</a></li>
             <li><a href="#contact" class="btn-primary">Contact</a></li>
         </ul>
     </nav>
@@ -658,9 +1019,9 @@ FILE: ./docs/apps.html
     <nav class="navbar">
         <div class="logo">KHAN SAQIB.</div>
         <ul class="nav-links">
-            <li><a href="index.html" class="">About</a></li>
-            <li><a href="projects.html" class="">Projects</a></li>
-            <li><a href="apps.html" class="active">Apps</a></li>
+	    <li><a href="/" class="">About</a></li>
+            <li><a href="/projects" class="">Projects</a></li>
+            <li><a href="/apps" class="active">Apps</a></li>
             <li><a href="#contact" class="btn-primary">Contact</a></li>
         </ul>
     </nav>
@@ -707,6 +1068,290 @@ FILE: ./docs/apps.html
 
 </body>
 </html>
+
+==================================================
+FILE: ./docs/projects/misc/advanced_browser_system_benchmark/index.html
+==================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Browser System Benchmark</title>
+<meta name="description" content="Performance testing tool for web browsers.">
+<link rel="stylesheet" href="/assets/css/styles.css"> 
+</head>
+<body>
+<header><h1>Advanced Browser System Benchmark</h1></header>
+
+
+<nav>
+    <a href="/">About Me</a>
+    <a href="/projects/">Projects</a>
+    <a href="/apps/">Apps</a>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark</button>
+</nav>
+
+<script>
+    const currentTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (currentTheme == 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    } else if (currentTheme == 'light') {
+        document.body.setAttribute('data-theme', 'light');
+        toggleBtn.textContent = '🌙 Dark';
+    } else if (prefersDarkScheme.matches) {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        let theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 Dark';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ Light';
+        }
+    });
+</script>
+
+
+<section>
+    <div class="card">
+        
+        <p>Performance testing tool for web browsers.</p>
+        <p>Analyze your browser's capabilities and system performance with this comprehensive benchmark tool.</p>
+        <p>Visit: <a href="/projects/misc/advanced_browser_system_benchmark/" target="_blank">Run Benchmark</a></p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Saqib Khan | <a href="https://github.com/saqibkh" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank">LinkedIn</a>
+</footer>
+</body>
+</html>
+
+
+==================================================
+FILE: ./docs/projects/misc/deciscope/index.html
+==================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deciscope</title>
+<meta name="description" content="Advanced decision-making utility.">
+<link rel="stylesheet" href="/assets/css/styles.css"> 
+</head>
+<body>
+<header><h1>Deciscope</h1></header>
+
+
+<nav>
+    <a href="/">About Me</a>
+    <a href="/projects/">Projects</a>
+    <a href="/apps/">Apps</a>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark</button>
+</nav>
+
+<script>
+    const currentTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (currentTheme == 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    } else if (currentTheme == 'light') {
+        document.body.setAttribute('data-theme', 'light');
+        toggleBtn.textContent = '🌙 Dark';
+    } else if (prefersDarkScheme.matches) {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        let theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 Dark';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ Light';
+        }
+    });
+</script>
+
+
+<section>
+    <div class="card">
+        
+        <p>Advanced decision-making utility.</p>
+        <p>Analyze options and criteria to make better decisions.</p>
+        <p>Visit: <a href="/projects/misc/deciscope/" target="_blank">View Project</a></p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Saqib Khan | <a href="https://github.com/saqibkh" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank">LinkedIn</a>
+</footer>
+</body>
+</html>
+
+
+==================================================
+FILE: ./docs/projects/misc/geolocation/index.html
+==================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geolocation</title>
+<meta name="description" content="Location tracking and mapping tool.">
+<link rel="stylesheet" href="/assets/css/styles.css"> 
+</head>
+<body>
+<header><h1>Geolocation</h1></header>
+
+
+<nav>
+    <a href="/">About Me</a>
+    <a href="/projects/">Projects</a>
+    <a href="/apps/">Apps</a>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark</button>
+</nav>
+
+<script>
+    const currentTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (currentTheme == 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    } else if (currentTheme == 'light') {
+        document.body.setAttribute('data-theme', 'light');
+        toggleBtn.textContent = '🌙 Dark';
+    } else if (prefersDarkScheme.matches) {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        let theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 Dark';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ Light';
+        }
+    });
+</script>
+
+
+<section>
+    <div class="card">
+        
+        <p>Location tracking and mapping tool.</p>
+        <p>Precise geolocation tool for tracking coordinates and mapping routes.</p>
+        <p>Visit: <a href="/projects/misc/geolocation/" target="_blank">View Project</a></p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Saqib Khan | <a href="https://github.com/saqibkh" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank">LinkedIn</a>
+</footer>
+</body>
+</html>
+
+
+==================================================
+FILE: ./docs/projects/misc/calclator/index.html
+==================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<meta name="description" content="All-in-one calculator web utility.">
+<link rel="stylesheet" href="/assets/css/styles.css"> 
+</head>
+<body>
+<header><h1>Calculator</h1></header>
+
+
+<nav>
+    <a href="/">About Me</a>
+    <a href="/projects/">Projects</a>
+    <a href="/apps/">Apps</a>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark</button>
+</nav>
+
+<script>
+    const currentTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (currentTheme == 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    } else if (currentTheme == 'light') {
+        document.body.setAttribute('data-theme', 'light');
+        toggleBtn.textContent = '🌙 Dark';
+    } else if (prefersDarkScheme.matches) {
+        document.body.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️ Light';
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        let theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            toggleBtn.textContent = '🌙 Dark';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            toggleBtn.textContent = '☀️ Light';
+        }
+    });
+</script>
+
+
+<section>
+    <div class="card">
+        
+        <p>All-in-one calculator web utility.</p>
+        <p>Standard, Scientific & Programmer modes with customizable themes.</p>
+        <p>Visit: <a href="/projects/misc/calculator/" target="_blank">View Project</a></p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Saqib Khan | <a href="https://github.com/saqibkh" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank">LinkedIn</a>
+</footer>
+</body>
+</html>
+
 
 ==================================================
 FILE: ./docs/static/style.css
@@ -1102,9 +1747,9 @@ FILE: ./templates/base.html
     <nav class="navbar">
         <div class="logo">KHAN SAQIB.</div>
         <ul class="nav-links">
-            <li><a href="index.html" class="{% if title == 'About Me' %}active{% endif %}">About</a></li>
-            <li><a href="projects.html" class="{% if title == 'Projects' %}active{% endif %}">Projects</a></li>
-            <li><a href="apps.html" class="{% if title == 'Apps' %}active{% endif %}">Apps</a></li>
+	    <li><a href="{{ url_for('home') }}" class="{% if title == 'About Me' %}active{% endif %}">About</a></li>
+            <li><a href="{{ url_for('projects') }}" class="{% if title == 'Projects' %}active{% endif %}">Projects</a></li>
+            <li><a href="{{ url_for('apps') }}" class="{% if title == 'Apps' %}active{% endif %}">Apps</a></li>
             <li><a href="#contact" class="btn-primary">Contact</a></li>
         </ul>
     </nav>

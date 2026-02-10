@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Saqib | Multi-Mode Calculator</title>
+    <meta name="description" content="Advanced Web Calculator with Standard, Scientific, and Programmer modes.">
+    
+    <link rel="stylesheet" href="../../../../../static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CALCULATOR SPECIFIC STYLES */
+        .calc-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #202020;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        /* Screen Area */
+        .calc-screen {
+            background: #000;
+            color: #fff;
+            padding: 2rem;
+            text-align: right;
+            border-bottom: 1px solid #333;
+        }
+        .calc-history {
+            font-size: 0.9rem;
+            color: #888;
+            min-height: 1.2em;
+            margin-bottom: 0.5rem;
+        }
+        .calc-output {
+            font-size: 2.5rem;
+            font-weight: 300;
+            word-wrap: break-word;
+        }
+
+        /* Mode Switcher */
+        .mode-tabs {
+            display: flex;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+        }
+        .mode-tab {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .mode-tab:hover { background: #252525; color: #fff; }
+        .mode-tab.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background: #252525;
+        }
+
+        /* Programmer Hex/Bin Display */
+        .prog-display {
+            display: none; /* Hidden by default */
+            font-family: monospace;
+            padding: 0.5rem 1rem;
+            background: #111;
+            font-size: 0.8rem;
+            color: #aaa;
+            border-bottom: 1px solid #333;
+        }
+        .prog-row span { color: var(--accent); margin-right: 10px; }
+
+        /* Keypad Grid */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: #333; /* Gap color */
+        }
+        
+        .btn-calc {
+            background: #202020;
+            border: none;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .btn-calc:active { background: #303030; }
+        .btn-calc:hover { background: #2a2a2a; }
+
+        .btn-op { color: var(--accent); font-weight: 700; background: #252525; }
+        .btn-eq { background: var(--accent); color: #000; font-weight: 700; }
+        .btn-eq:hover { background: #5a95f5; }
+        .btn-clear { color: #ff5555; background: #251010; }
+
+        /* Scientific / Programmer Extra Keys */
+        .mode-keys { display: none; } /* Hidden by default */
+        .mode-keys.active { display: contents; } /* Uses grid layout of parent */
+
+        .btn-sci, .btn-prog { font-size: 0.9rem; color: #aaa; background: #181818; }
+        
+        /* Layout Adjustments for Scientific Mode */
+        .keypad.scientific-grid { grid-template-columns: repeat(5, 1fr); }
+        
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">KHAN SAQIB.</div>
+        <ul class="nav-links">
+            <li><a href="/">About</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/apps">Apps</a></li>
+            <li><a href="/#contact" class="btn-primary">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="projects-section">
+        <div class="container" style="padding-top: 100px;">
+            <h2 class="section-title">Calculator</h2>
+
+            <div class="calc-container">
+                <div class="mode-tabs">
+                    <button class="mode-tab active" onclick="setMode('standard')">Standard</button>
+                    <button class="mode-tab" onclick="setMode('scientific')">Scientific</button>
+                    <button class="mode-tab" onclick="setMode('programmer')">Programmer</button>
+                </div>
+
+                <div class="calc-screen">
+                    <div class="calc-history" id="history"></div>
+                    <div class="calc-output" id="display">0</div>
+                </div>
+
+                <div class="prog-display" id="progInfo">
+                    <div class="prog-row"><span>HEX</span> <span id="hexVal">0</span></div>
+                    <div class="prog-row"><span>BIN</span> <span id="binVal">0</span></div>
+                </div>
+
+                <div class="keypad" id="keypad">
+                    
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="handleMath('sin')">sin</button>
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="handleMath('cos')">cos</button>
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="handleMath('tan')">tan</button>
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="handleMath('log')">log</button>
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="handleMath('pi')">π</button>
+
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="handleMath('sqrt')">√</button>
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="handleMath('pow')">x^y</button>
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="insert('(')">(</button>
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="insert(')')">)</button>
+                    <button class="btn-calc btn-sci mode-keys sci-keys" onclick="handleMath('e')">e</button>
+
+                    <button class="btn-calc btn-prog mode-keys prog-keys" onclick="insert('A')">A</button>
+                    <button class="btn-calc btn-prog mode-keys prog-keys" onclick="insert('B')">B</button>
+                    <button class="btn-calc btn-prog mode-keys prog-keys" onclick="insert('C')">C</button>
+                    <button class="btn-calc btn-prog mode-keys prog-keys" onclick="insert('D')">D</button>
+                    
+                    <button class="btn-calc btn-clear" onclick="clearDisplay()">AC</button>
+                    <button class="btn-calc btn-clear" onclick="deleteChar()">DEL</button>
+                    <button class="btn-calc btn-op" onclick="insert('%')">%</button>
+                    <button class="btn-calc btn-op" onclick="insert('/')">÷</button>
+
+                    <button class="btn-calc" onclick="insert('7')">7</button>
+                    <button class="btn-calc" onclick="insert('8')">8</button>
+                    <button class="btn-calc" onclick="insert('9')">9</button>
+                    <button class="btn-calc btn-op" onclick="insert('*')">×</button>
+
+                    <button class="btn-calc" onclick="insert('4')">4</button>
+                    <button class="btn-calc" onclick="insert('5')">5</button>
+                    <button class="btn-calc" onclick="insert('6')">6</button>
+                    <button class="btn-calc btn-op" onclick="insert('-')">-</button>
+
+                    <button class="btn-calc" onclick="insert('1')">1</button>
+                    <button class="btn-calc" onclick="insert('2')">2</button>
+                    <button class="btn-calc" onclick="insert('3')">3</button>
+                    <button class="btn-calc btn-op" onclick="insert('+')">+</button>
+
+                    <button class="btn-calc" onclick="insert('00')">00</button>
+                    <button class="btn-calc" onclick="insert('0')">0</button>
+                    <button class="btn-calc" onclick="insert('.')">.</button>
+                    <button class="btn-calc btn-eq" onclick="calculate()">=</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <h2>Let's build something together.</h2>
+            <p>Open for opportunities in software development and technical consulting.</p>
+            <a href="mailto:saqibkhan@utexas.edu" class="email-link">saqibkhan@utexas.edu</a>
+            <div class="copyright">
+                &copy; 2026 Khan Saqib. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const display = document.getElementById('display');
+        const history = document.getElementById('history');
+        const keypad = document.getElementById('keypad');
+        const progInfo = document.getElementById('progInfo');
+        let currentMode = 'standard';
+
+        function insert(char) {
+            if (display.innerText === '0' && char !== '.') {
+                display.innerText = char;
+            } else {
+                display.innerText += char;
+            }
+            updateProgrammerData();
+        }
+
+        function clearDisplay() {
+            display.innerText = '0';
+            history.innerText = '';
+            updateProgrammerData();
+        }
+
+        function deleteChar() {
+            if (display.innerText.length > 1) {
+                display.innerText = display.innerText.slice(0, -1);
+            } else {
+                display.innerText = '0';
+            }
+            updateProgrammerData();
+        }
+
+        function calculate() {
+            try {
+                history.innerText = display.innerText + ' =';
+                // Safe eval replacement could be implemented here, using eval for simplicity in this demo
+                // Replacing 'x' with '*' if user typed it manually, though keypad sends '*'
+                let expression = display.innerText.replace('×', '*').replace('÷', '/');
+                
+                // Handle power function for Eval
+                expression = expression.replace(/\^/g, '**'); 
+
+                display.innerText = eval(expression);
+                updateProgrammerData();
+            } catch (error) {
+                display.innerText = 'Error';
+            }
+        }
+
+        function handleMath(func) {
+            let val = parseFloat(display.innerText);
+            switch(func) {
+                case 'sin': display.innerText = Math.sin(val); break;
+                case 'cos': display.innerText = Math.cos(val); break;
+                case 'tan': display.innerText = Math.tan(val); break;
+                case 'sqrt': display.innerText = Math.sqrt(val); break;
+                case 'log': display.innerText = Math.log10(val); break;
+                case 'pi': insert(Math.PI); return; // Insert PI, don't calculate immediately
+                case 'e': insert(Math.E); return;
+                case 'pow': insert('**'); return;
+            }
+            updateProgrammerData();
+        }
+
+        function updateProgrammerData() {
+            if (currentMode !== 'programmer') return;
+            
+            let val = parseInt(display.innerText);
+            if (!isNaN(val)) {
+                document.getElementById('hexVal').innerText = val.toString(16).toUpperCase();
+                document.getElementById('binVal').innerText = val.toString(2);
+            } else {
+                document.getElementById('hexVal').innerText = '-';
+                document.getElementById('binVal').innerText = '-';
+            }
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // 1. Reset Tabs
+            document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // 2. Hide all special keys
+            document.querySelectorAll('.mode-keys').forEach(k => k.classList.remove('active'));
+            document.getElementById('progInfo').style.display = 'none';
+            keypad.classList.remove('scientific-grid');
+
+            // 3. Show relevant keys
+            if (mode === 'scientific') {
+                document.querySelectorAll('.sci-keys').forEach(k => k.classList.add('active'));
+                keypad.classList.add('scientific-grid');
+            } else if (mode === 'programmer') {
+                document.querySelectorAll('.prog-keys').forEach(k => k.classList.add('active'));
+                document.getElementById('progInfo').style.display = 'block';
+                updateProgrammerData();
+            }
+            
+            clearDisplay();
+        }
+    </script>
+
+</body>
+</html>

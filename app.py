@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+import os
+from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__)
 
@@ -57,25 +58,55 @@ PROJECTS = [
         "name": "Pantheon",
         "tag": "Hardware & Performance",
         "desc": "A GPU workload stress-testing tool designed to push hardware limits and analyze performance stability.",
-        "link": "#"
+        "link": "https://saqibkh.github.io/pantheon"
     },
     {
         "name": "Muslim Name Vault",
         "tag": "Web & Data",
         "desc": "A comprehensive, SEO-optimized database for Muslim baby names, built with Python automation.",
-        "link": "#"
+        "link": "https://muslimnamevault.com"
     },
     {
         "name": "ISA Database",
         "tag": "Computer Architecture",
         "desc": "A web-based resource documenting Instruction Set Architectures for educational and technical reference.",
-        "link": "#"
+        "link": "https://instructionsets.com"
     },
     {
-        "name": "Algorithmic Trading Bot",
-        "tag": "FinTech",
-        "desc": "Automated trading strategies implemented in Python using the Alpaca API for real-time market execution.",
-        "link": "#"
+        "name": "Cloud Sound YouTube Channel",
+        "tag": "Youtube Channel",
+        "desc": "",
+        "link": "https://www.youtube.com/@Cloud__Sound"
+    },
+    {
+        "name": "Intelligence Lab YouTube Channel",
+        "tag": "Youtube Channel",
+        "desc": "Tech and Engineering educational content.",
+        "link": "https://www.youtube.com/@Intelligence_Lab_SK"
+    },
+    {
+        "name": "Advanced Browser System Benchmark",
+        "tag": "Web Application",
+        "desc": "Analyze your browser's capabilities and system performance with this comprehensive benchmark tool.",
+        "link": "/projects/misc/advanced_browser_system_benchmark/"
+    },
+    {
+        "name": "Calculator",
+        "tag": "Web Application",
+        "desc": "All-in-one calculator web utility. Standard, Scientific & Programmer modes with customizable themes.",
+        "link": "/projects/misc/calculator/"
+    },
+    {
+        "name": "Deciscope",
+        "tag": "Web Application",
+        "desc": "",
+        "link": "/projects/misc/deciscope/"
+    },
+    {
+        "name": "Geolocation",
+        "tag": "Web Application",
+        "desc": "Precise geolocation tool for tracking coordinates and mapping routes.",
+        "link": "/projects/misc/geolocation/"
     }
 ]
 
@@ -91,17 +122,27 @@ APPS = {
     "ios": []
 }
 
+
 @app.route('/')
 def home():
     return render_template('index.html', title="About Me", bio=BIO, experience=EXPERIENCE, education=EDUCATION, skills=SKILLS)
 
-@app.route('/projects.html')
+@app.route('/projects')  # Changed from /projects.html
 def projects():
     return render_template('projects.html', title="Projects", projects=PROJECTS)
 
-@app.route('/apps.html')
+@app.route('/apps')      # Changed from /apps.html
 def apps():
     return render_template('apps.html', title="Apps", apps=APPS)
 
+@app.route('/projects/misc/<path:filename>')
+def serve_projects(filename):
+    full_path = os.path.join('static_pages/projects/misc', filename)
+    
+    # If the user requests a folder (e.g. .../calculator/), serve index.html
+    if os.path.isdir(full_path):
+        filename = os.path.join(filename, 'index.html')
+        
+    return send_from_directory('static_pages/projects/misc', filename)
 if __name__ == '__main__':
     app.run(debug=True)

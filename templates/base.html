@@ -10,11 +10,11 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo">KHAN SAQIB.</div>
+        <div class="logo">KHAN SAQIB</div>
         <ul class="nav-links">
-            <li><a href="index.html" class="{% if title == 'About Me' %}active{% endif %}">About</a></li>
-            <li><a href="projects.html" class="{% if title == 'Projects' %}active{% endif %}">Projects</a></li>
-            <li><a href="apps.html" class="{% if title == 'Apps' %}active{% endif %}">Apps</a></li>
+	    <li><a href="{{ url_for('home') }}" class="{% if title == 'About Me' %}active{% endif %}">About</a></li>
+            <li><a href="{{ url_for('projects') }}" class="{% if title == 'Projects' %}active{% endif %}">Projects</a></li>
+            <li><a href="{{ url_for('apps') }}" class="{% if title == 'Apps' %}active{% endif %}">Apps</a></li>
             <li><a href="#contact" class="btn-primary">Contact</a></li>
         </ul>
     </nav>

@@ -11,12 +11,18 @@ os.makedirs('docs')
 print("📂 Copying static files...")
 shutil.copytree('static', 'docs/static')
 
+# --- NEW STEP: Copy Standalone Projects ---
+print("📂 Copying standalone projects...")
+# This merges your static_pages into docs so URLs match perfectly
+shutil.copytree('static_pages', 'docs', dirs_exist_ok=True) 
+# ----------------------------------------
+
 # 3. Generate HTML Pages
 client = app.test_client()
 pages = [
     ('/', 'docs/index.html'),
-    ('/projects.html', 'docs/projects.html'),
-    ('/apps.html', 'docs/apps.html')
+    ('/projects', 'docs/projects.html'),
+    ('/apps', 'docs/apps.html')
 ]
 
 print("⚙️  Generating pages...")

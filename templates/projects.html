@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="projects-section">
+    <div class="container" style="padding-top: 80px;">
+        <h2 class="section-title">Technical Projects</h2>
+        <div class="project-grid">
+            {% for project in projects %}
+            <div class="project-card">
+                <span class="project-tag">{{ project.tag }}</span>
+                <h3>{{ project.name }}</h3>
+                <p>{{ project.desc }}</p>
+                <a href="{{ project.link }}" class="project-link">View Project →</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

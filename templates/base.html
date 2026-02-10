@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Saqib | {{ title }}</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">KHAN SAQIB.</div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="{% if title == 'About Me' %}active{% endif %}">About</a></li>
+            <li><a href="projects.html" class="{% if title == 'Projects' %}active{% endif %}">Projects</a></li>
+            <li><a href="apps.html" class="{% if title == 'Apps' %}active{% endif %}">Apps</a></li>
+            <li><a href="#contact" class="btn-primary">Contact</a></li>
+        </ul>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer id="contact">
+        <div class="container">
+            <h2>Let's build something together.</h2>
+            <p>Open for opportunities in software development and technical consulting.</p>
+            <a href="mailto:saqibkhan@utexas.edu" class="email-link">saqibkhan@utexas.edu</a>
+            <div class="copyright">
+                &copy; 2026 Khan Saqib. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

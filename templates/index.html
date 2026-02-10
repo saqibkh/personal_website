@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="hero">
+    <div class="hero-content">
+        <div class="profile-header">
+            <div class="profile-img-container">
+                <img src="static/img/profile.jpg" alt="Saqib Khan" class="profile-img" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="profile-text">
+                <span class="greeting">Hello, I'm {{ bio.name }}.</span>
+                <h1>{{ bio.role }}</h1>
+                <p class="subtitle">{{ bio.text }}</p>
+                
+                <div class="social-links">
+                    <a href="{{ bio.github }}" target="_blank" class="btn-text">GitHub ↗</a>
+                    <a href="{{ bio.linkedin }}" target="_blank" class="btn-text">LinkedIn ↗</a>
+                    <a href="mailto:{{ bio.email }}" class="btn-text">Email ↗</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="resume-section">
+    <div class="container">
+        
+        <div class="resume-grid">
+            <div class="resume-col">
+                <h2 class="section-title">Experience</h2>
+                <div class="timeline">
+                    {% for job in experience %}
+                    <div class="timeline-item">
+                        <span class="date">{{ job.date }}</span>
+                        <h3>{{ job.role }}</h3>
+                        <h4>{{ job.company }}</h4>
+                        <p>{{ job.details }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="resume-col">
+                <h2 class="section-title">Skills</h2>
+                <div class="skills-box">
+                    <h3>Programming Languages</h3>
+                    <div class="tags">
+                        {% for skill in skills.Languages %}
+                        <span class="tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="skills-box">
+                    <h3>Tools & Technologies</h3>
+                    <div class="tags">
+                        {% for tool in skills.Tools %}
+                        <span class="tag">{{ tool }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <br><br>
+
+                <h2 class="section-title">Education</h2>
+                {% for edu in education %}
+                <div class="education-item">
+                    <h3>{{ edu.school }}</h3>
+                    <p>{{ edu.degree }}</p>
+                    <span class="date">{{ edu.year }}</span>
+                </div>
+                {% endfor %}
+
+                <br><br>
+
+                <h2 class="section-title">Hobbies</h2>
+                <ul class="hobby-list">
+                    {% for hobby in bio.hobbies %}
+                    <li>✓ {{ hobby }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

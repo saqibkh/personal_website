@@ -39,60 +39,86 @@ const historyChart = new Chart(ctxChart, {
 });
 
 /* State */
-let audioContext, analyser, microphone, scriptProcessor;
+let audioContext, analyser, microphone, meterNode;
 let isRecording = false;
 let calibrationOffset = 0;
-let recordedData = []; // Store {time, db} for export
+let recordedData = []; 
 let stats = { max: 0, sum: 0, count: 0 };
 let startTime = null;
+let animationId = null; // To stop the loop cleanly
 
 /* --- CONTROLS --- */
 
 async function startMeter() {
+    if (isRecording) return;
+
     try {
         log("Requesting microphone access...");
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
         
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // CRITICAL FIX: Ensure Context is Running
+        if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+        }
+
+        // 1. Load the Worklet Processor
+        try {
+            await audioContext.audioWorklet.addModule('processor.js');
+        } catch (e) {
+            throw new Error("Could not load processor.js. Check file path.");
+        }
+
         analyser = audioContext.createAnalyser();
         microphone = audioContext.createMediaStreamSource(stream);
-        scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
+        meterNode = new AudioWorkletNode(audioContext, 'meter-processor');
 
-        analyser.smoothingTimeConstant = 0.8;
-        analyser.fftSize = 1024;
+        // FFT Size for Frequency Graph
+        analyser.smoothingTimeConstant = 0.85;
+        analyser.fftSize = 2048; // Higher resolution
 
+        // Connect: Mic -> Analyser -> Meter -> Destination
         microphone.connect(analyser);
-        analyser.connect(scriptProcessor);
-        scriptProcessor.connect(audioContext.destination);
+        analyser.connect(meterNode);
+        meterNode.connect(audioContext.destination);
 
-        scriptProcessor.onaudioprocess = processAudio;
+        // Listen for volume updates
+        meterNode.port.onmessage = (event) => {
+            if (event.data.volume) processVolume(event.data.volume);
+        };
         
-        // Start Viz Loops
+        // Start Viz
+        isRecording = true;
         visualizeFrequency();
         
-        // UI Updates
-        isRecording = true;
+        // Reset Data
         startTime = new Date();
         recordedData = [];
         stats = { max: 0, sum: 0, count: 0 };
         
+        // UI Updates
         btnStart.disabled = true;
         btnStop.disabled = false;
         btnExport.disabled = true;
         statusBadge.innerText = "LIVE";
         statusBadge.classList.add('active');
-        log("Microphone connected. Monitoring started.");
+        log("Microphone connected. Audio engine active.");
 
     } catch (err) {
         log("Error: " + err.message, "warn");
-        alert("Microphone access denied or not available.");
+        alert("Error: " + err.message);
     }
 }
 
 function stopMeter() {
     if (!isRecording) return;
     
-    if (scriptProcessor) scriptProcessor.disconnect();
+    // Stop Animation Loop
+    if (animationId) cancelAnimationFrame(animationId);
+
+    // Clean up nodes
+    if (meterNode) { meterNode.disconnect(); meterNode = null; }
     if (analyser) analyser.disconnect();
     if (microphone) microphone.disconnect();
     if (audioContext) audioContext.close();
@@ -103,42 +129,30 @@ function stopMeter() {
     btnExport.disabled = false;
     statusBadge.innerText = "STOPPED";
     statusBadge.classList.remove('active');
+    
+    // Clear visualization
+    const canvas = document.getElementById('freqCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
     log("Monitoring stopped. Data ready for export.");
 }
 
 /* --- AUDIO PROCESSING --- */
 
-function processAudio(event) {
-    const input = event.inputBuffer.getChannelData(0);
-    let sum = 0;
-    
-    // Calculate RMS (Root Mean Square)
-    for (let i = 0; i < input.length; i++) {
-        sum += input[i] * input[i];
-    }
-    const rms = Math.sqrt(sum / input.length);
-    
-    // Convert to Decibels
-    // Standard reference: 20 * log10(RMS)
-    // We add a base offset (~100) to normalize typical mic input to SPL-like values
+function processVolume(rms) {
     let db = 20 * Math.log10(rms) + 100 + parseFloat(calibrationOffset);
-    
-    if (db < 0) db = 0; // Clamp negative
-    if (!isFinite(db)) db = 0;
-
+    if (db < 0 || !isFinite(db)) db = 0;
     updateDashboard(db);
 }
 
 function updateDashboard(db) {
-    // 1. Digital Readout
     dbReadout.innerText = db.toFixed(1);
     
-    // Color coding
-    if (db > 85) dbReadout.style.color = "#ef4444"; // Danger
-    else if (db > 70) dbReadout.style.color = "#f59e0b"; // Warning
+    if (db > 85) dbReadout.style.color = "#ef4444"; 
+    else if (db > 70) dbReadout.style.color = "#f59e0b"; 
     else dbReadout.style.color = "#fff";
 
-    // 2. Stats
     if (db > stats.max) stats.max = db;
     stats.sum += db;
     stats.count++;
@@ -146,17 +160,14 @@ function updateDashboard(db) {
     valMax.innerText = stats.max.toFixed(1);
     valAvg.innerText = (stats.sum / stats.count).toFixed(1);
 
-    // 3. Chart Update (Throttled to roughly 10fps by logic flow, but here simply push)
-    // Only push to chart every ~500ms would be better, but for smoothness we update live
-    // Just shift the array
+    // Chart Update
     const chartData = historyChart.data.datasets[0].data;
     chartData.shift();
     chartData.push(db);
     historyChart.update();
 
-    // 4. Record Data
     recordedData.push({
-        time: (new Date() - startTime) / 1000, // seconds since start
+        time: (new Date() - startTime) / 1000, 
         db: db.toFixed(2)
     });
 }
@@ -168,27 +179,38 @@ function visualizeFrequency() {
     
     const canvas = document.getElementById('freqCanvas');
     const ctx = canvas.getContext('2d');
+    
+    // CRITICAL FIX: Match Internal Resolution to Display Size
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
     function draw() {
         if (!isRecording) return;
-        requestAnimationFrame(draw);
+        animationId = requestAnimationFrame(draw);
 
         analyser.getByteFrequencyData(dataArray);
 
+        // Clear with background color
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        // Calculate Bar Width based on actual canvas width
         const barWidth = (canvas.width / bufferLength) * 2.5;
         let barHeight;
         let x = 0;
 
         for (let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i] / 2; // Scale down
+            barHeight = (dataArray[i] / 255) * canvas.height; // Normalize height
 
-            // Gradient Color
-            ctx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
+            // Color Gradient based on frequency volume
+            const r = barHeight + 50; 
+            const g = 255 - barHeight; 
+            const b = 50;
+
+            ctx.fillStyle = `rgb(${r},${g},${b})`;
             ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
 
             x += barWidth + 1;

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../../../../static/style.css">
     <link rel="stylesheet" href="style.css">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -56,9 +56,9 @@
                     </div>
 
                     <div class="keypad" id="keypad">
-                        <button class="btn-calc btn-sci sci-key group-trig" onclick="handleMath('sin')">sin</button>
-                        <button class="btn-calc btn-sci sci-key group-trig" onclick="handleMath('cos')">cos</button>
-                        <button class="btn-calc btn-sci sci-key group-trig" onclick="handleMath('tan')">tan</button>
+                        
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('sin')">sin</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('cos')">cos</button>
                         <button class="btn-calc btn-hex prog-key" data-key="A" onclick="insert('A')">A</button>
                         <button class="btn-calc btn-hex prog-key" data-key="B" onclick="insert('B')">B</button>
                         
@@ -67,9 +67,8 @@
                         <button class="btn-calc btn-op" data-key="%" onclick="insert('%')">%</button>
                         <button class="btn-calc btn-op" data-key="/" onclick="insert('/')">÷</button>
 
-                        <button class="btn-calc btn-sci sci-key group-trig" onclick="handleMath('asin')">sin⁻¹</button>
-                        <button class="btn-calc btn-sci sci-key group-trig" onclick="handleMath('acos')">cos⁻¹</button>
-                        <button class="btn-calc btn-sci sci-key group-trig" onclick="handleMath('atan')">tan⁻¹</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('tan')">tan</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('asin')">sin⁻¹</button>
                         <button class="btn-calc btn-hex prog-key" data-key="C" onclick="insert('C')">C</button>
                         <button class="btn-calc btn-hex prog-key" data-key="D" onclick="insert('D')">D</button>
 
@@ -78,9 +77,8 @@
                         <button class="btn-calc num-key" data-key="9" onclick="insert('9')">9</button>
                         <button class="btn-calc btn-op" data-key="*" onclick="insert('*')">×</button>
 
-                        <button class="btn-calc btn-sci sci-key group-log" onclick="handleMath('ln')">ln</button>
-                        <button class="btn-calc btn-sci sci-key group-log" onclick="handleMath('log')">log</button>
-                        <button class="btn-calc btn-sci sci-key group-other" onclick="handleMath('sqrt')">√</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('acos')">cos⁻¹</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('atan')">tan⁻¹</button>
                         <button class="btn-calc btn-hex prog-key" data-key="E" onclick="insert('E')">E</button>
                         <button class="btn-calc btn-hex prog-key" data-key="F" onclick="insert('F')">F</button>
 
@@ -89,9 +87,8 @@
                         <button class="btn-calc num-key" data-key="6" onclick="insert('6')">6</button>
                         <button class="btn-calc btn-op" data-key="-" onclick="insert('-')">−</button>
 
-                        <button class="btn-calc btn-sci sci-key group-other" onclick="handleMath('pow')">x^y</button>
-                        <button class="btn-calc btn-sci sci-key group-other" onclick="handleMath('pi')">π</button>
-                        <button class="btn-calc btn-sci sci-key group-other" onclick="handleMath('e')">e</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('ln')">ln</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('log')">log</button>
                         <button class="btn-calc btn-hex prog-key" onclick="insert('(')">(</button>
                         <button class="btn-calc btn-hex prog-key" onclick="insert(')')">)</button>
 
@@ -100,11 +97,11 @@
                         <button class="btn-calc num-key" data-key="3" onclick="insert('3')">3</button>
                         <button class="btn-calc btn-op" data-key="+" onclick="insert('+')">+</button>
 
-                        <button class="btn-calc btn-sci sci-key group-other" onclick="insert('(')">(</button>
-                        <button class="btn-calc btn-sci sci-key group-other" onclick="insert(')')">)</button>
-                        <button class="btn-calc btn-sci sci-key group-other" onclick="handleMath('abs')">|x|</button>
-                        <button class="btn-calc btn-hex prog-key disabled-key" disabled></button>
-                        <button class="btn-calc btn-hex prog-key disabled-key" disabled></button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('pi')">π</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('sqrt')">√</button>
+                        <button class="btn-calc btn-sci sci-key" onclick="handleMath('pow')">x^y</button>
+                        <button class="btn-calc btn-hex prog-key" disabled></button> 
+                        <button class="btn-calc btn-hex prog-key" disabled></button> 
 
                         <button class="btn-calc num-key" onclick="toggleSign()">±</button>
                         <button class="btn-calc num-key" data-key="0" onclick="insert('0')">0</button>

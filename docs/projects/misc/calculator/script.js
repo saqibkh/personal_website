@@ -9,26 +9,22 @@ const btnDot = document.getElementById('btnDot');
 /* State Variables */
 let currentMode = 'standard';
 let currentBase = 10;
-let currentValue = 0; 
 
 /* --- KEYBOARD INPUT LISTENER --- */
 document.addEventListener('keydown', (e) => {
     const key = e.key;
-
-    // Prevent default scrolling/action for calculator keys
     if (['Enter', ' ', 'Backspace', 'Escape'].includes(key)) e.preventDefault();
 
-    // Map specific keyboard keys to functions
     if (key === 'Enter' || key === '=') calculate();
     else if (key === 'Escape') clearDisplay();
     else if (key === 'Backspace') deleteChar();
     else {
-        // Find matching button to trigger animation & logic
-        // We use uppercase for Hex keys (a -> A)
+        // Find matching button (case insensitive for hex)
         const btn = document.querySelector(`button[data-key="${key.toUpperCase()}"]`) || 
                     document.querySelector(`button[data-key="${key}"]`);
         
-        if (btn && !btn.disabled && btn.offsetParent !== null) { // Check if visible and enabled
+        // Only click if button is currently visible on screen
+        if (btn && !btn.disabled && btn.offsetParent !== null) {
             btn.click();
             btn.classList.add('pressed');
             setTimeout(() => btn.classList.remove('pressed'), 100);
@@ -37,18 +33,13 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* --- CORE FUNCTIONS --- */
-
-// Insert character into display
 function insert(char) {
-    // Validate Programmer Mode Input
     if (currentMode === 'programmer') {
         if (currentBase === 2 && !['0','1'].includes(char)) return;
         if (currentBase === 8 && !['0','1','2','3','4','5','6','7'].includes(char)) return;
         if (currentBase === 10 && !/[0-9]/.test(char)) return;
-        // Hex allows all chars passed by buttons
     }
-
-    // Prevent multiple decimals
+    
     if (char === '.' && display.innerText.includes('.')) return;
 
     if (display.innerText === '0' && char !== '.' && !['+','-','*','/'].includes(char)) {
@@ -88,27 +79,19 @@ function toggleSign() {
 function calculate() {
     try {
         if (currentMode === 'programmer') {
-            updateBaseViews(); // Just commit the value
+            updateBaseViews();
             return;
         }
 
         let expression = display.innerText;
         history.innerText = expression + ' =';
-
-        // Sanitize visual operators to JS math
-        expression = expression.replace(/×/g, '*')
-                               .replace(/÷/g, '/')
-                               .replace(/\^/g, '**'); 
-
-        // Evaluate
-        // Note: For production, a parser is safer than eval, but eval is standard for simple JS calcs
+        expression = expression.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**'); 
+        
         let result = eval(expression);
-
-        // Handle precision errors (e.g., 0.1 + 0.2)
+        
         if (!Number.isInteger(result)) {
             result = parseFloat(result.toFixed(8));
         }
-
         display.innerText = result;
 
     } catch (error) {
@@ -117,7 +100,6 @@ function calculate() {
     }
 }
 
-// Scientific Math Functions
 function handleMath(func) {
     let val = parseFloat(display.innerText);
     let res = 0;
@@ -129,39 +111,26 @@ function handleMath(func) {
         case 'asin': res = Math.asin(val); break;
         case 'acos': res = Math.acos(val); break;
         case 'atan': res = Math.atan(val); break;
-        case 'ln': res = Math.log(val); break; // Natural log
-        case 'log': res = Math.log10(val); break; // Base 10
+        case 'ln': res = Math.log(val); break;
+        case 'log': res = Math.log10(val); break;
         case 'sqrt': res = Math.sqrt(val); break;
-        case 'abs': res = Math.abs(val); break;
-        case 'pi': insert(Math.PI.toFixed(6)); return;
-        case 'e': insert(Math.E.toFixed(6)); return;
         case 'pow': insert('^'); return;
+        case 'pi': insert(Math.PI.toFixed(6)); return;
     }
 
-    // Update display with result (rounded to avoid long decimals)
-    if (!isNaN(res)) {
-        display.innerText = parseFloat(res.toFixed(8));
-    } else {
-        display.innerText = "Error";
-    }
+    if (!isNaN(res)) display.innerText = parseFloat(res.toFixed(8));
+    else display.innerText = "Error";
 }
 
 /* --- PROGRAMMER MODE LOGIC --- */
-
 function setBase(base) {
-    // 1. Convert current visual value to Integer (from OLD base)
     let currentValStr = display.innerText;
     let val = parseInt(currentValStr, currentBase);
-    
     if (isNaN(val)) val = 0;
 
-    // 2. Switch Base State
     currentBase = base;
-
-    // 3. Render Value in NEW Base
     display.innerText = val.toString(currentBase).toUpperCase();
 
-    // 4. Update UI Active State
     document.querySelectorAll('.base-row').forEach(row => row.classList.remove('active'));
     if(base === 16) document.getElementById('rowHex').classList.add('active');
     if(base === 10) document.getElementById('rowDec').classList.add('active');
@@ -174,7 +143,6 @@ function setBase(base) {
 function updateBaseViews() {
     let val = parseInt(display.innerText, currentBase);
     if (isNaN(val)) val = 0;
-
     document.getElementById('valHex').innerText = val.toString(16).toUpperCase();
     document.getElementById('valDec').innerText = val.toString(10);
     document.getElementById('valOct').innerText = val.toString(8);
@@ -189,30 +157,16 @@ function updateKeypadState() {
     buttons.forEach(btn => {
         const key = btn.getAttribute('data-key');
         let enabled = true;
-
-        if (currentBase === 2) { 
-            if (nums.includes(key) && key > 1) enabled = false;
-            if (hexKeys.includes(key)) enabled = false;
-        } 
-        else if (currentBase === 8) {
-            if (nums.includes(key) && key > 7) enabled = false;
-            if (hexKeys.includes(key)) enabled = false;
-        }
-        else if (currentBase === 10) {
-            if (hexKeys.includes(key)) enabled = false;
-        }
-        // Hex allows everything
-
+        if (currentBase === 2 && (nums.includes(key) && key > 1 || hexKeys.includes(key))) enabled = false;
+        else if (currentBase === 8 && (nums.includes(key) && key > 7 || hexKeys.includes(key))) enabled = false;
+        else if (currentBase === 10 && hexKeys.includes(key)) enabled = false;
+        
         btn.disabled = !enabled;
     });
-
-    // Decimal point is invalid in Integer programming modes
-    btnDot.disabled = true;
+    btnDot.disabled = true; // No decimals in this simple programmer mode
 }
 
-
 /* --- MODE SWITCHING --- */
-
 function setMode(mode) {
     currentMode = mode;
     currentBase = 10; 
@@ -222,16 +176,14 @@ function setMode(mode) {
     document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
 
-    // Reset Classes
+    // Reset Styles
     keypad.className = 'keypad';
     container.className = 'calc-container';
     baseSwitcher.style.display = 'none';
     btnDot.disabled = false;
-
-    // Hide special keys
     document.querySelectorAll('.sci-key, .prog-key').forEach(k => k.classList.remove('visible'));
 
-    // Apply Mode Specifics
+    // Apply New Mode
     if (mode === 'scientific') {
         container.classList.add('wide-mode');
         keypad.classList.add('scientific-grid');
@@ -242,6 +194,6 @@ function setMode(mode) {
         keypad.classList.add('programmer-grid');
         baseSwitcher.style.display = 'block';
         document.querySelectorAll('.prog-key').forEach(k => k.classList.add('visible'));
-        setBase(10); 
+        setBase(10);
     }
 }

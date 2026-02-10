@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khan Saqib | Deciscope</title>
-    <meta name="description" content="Advanced decision-making utility.">
+    <meta name="description" content="Professional real-time sound level meter and frequency analyzer.">
+    
     <link rel="stylesheet" href="../../../../../static/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -20,20 +25,85 @@
         </ul>
     </nav>
 
-    <section class="projects-section">
-        <div class="container" style="padding-top: 100px;">
-            <h2 class="section-title">Deciscope</h2>
+    <section class="tool-section">
+        <div class="container" style="padding-top: 80px;">
             
-            <div class="project-grid">
-                <div class="project-card" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                    <span class="project-tag">Utility</span>
-                    <h3>Decision Helper</h3>
-                    <p>Analyze options and criteria to make better decisions.</p>
-                    <div style="background: #222; padding: 15px; border-radius: 4px; margin-top: 15px; border: 1px dashed #444;">
-                        <p style="font-size: 0.9rem; color: #888;">Tool Interface Placeholder</p>
+            <div class="dashboard-grid">
+                
+                <div class="panel meter-panel">
+                    <div class="panel-header">
+                        <h2>DECISCOPE</h2>
+                        <div class="status-badge" id="statusBadge">READY</div>
                     </div>
+
+                    <div class="readout-container">
+                        <div class="readout-val" id="dbReadout">--.-</div>
+                        <div class="readout-unit">dB</div>
+                    </div>
+                    
+                    <div class="gauge-container">
+                        <canvas id="gaugeCanvas"></canvas>
+                    </div>
+
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="label">MAX</span>
+                            <span class="val" id="valMax">--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="label">AVG</span>
+                            <span class="val" id="valAvg">--</span>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn-tool start" id="btnStart" onclick="startMeter()">
+                            Start Monitoring
+                        </button>
+                        <button class="btn-tool stop" id="btnStop" onclick="stopMeter()" disabled>
+                            Stop
+                        </button>
+                    </div>
+
+                    <div class="calibration-box">
+                        <label>Mic Sensitivity Offset: <span id="calVal">0</span> dB</label>
+                        <input type="range" id="calibrationSlider" min="-30" max="30" value="0" oninput="updateCalibration(this.value)">
+                    </div>
+
+                    <button class="btn-tool export" id="btnExport" onclick="exportData()" disabled>
+                        Download CSV Report
+                    </button>
                 </div>
+
+                <div class="viz-grid">
+                    
+                    <div class="panel viz-panel">
+                        <div class="panel-header-small">
+                            <h3>FREQUENCY SPECTRUM</h3>
+                        </div>
+                        <canvas id="freqCanvas" height="150"></canvas>
+                    </div>
+
+                    <div class="panel viz-panel">
+                        <div class="panel-header-small">
+                            <h3>NOISE HISTORY (60s)</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="historyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="panel log-panel">
+                        <div class="log-header">> Event Log</div>
+                        <div class="log-body" id="consoleLog">
+                            <div class="log-line">System initialized. Waiting for microphone access...</div>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
     </section>
 
@@ -47,6 +117,8 @@
             </div>
         </div>
     </footer>
+
+    <script src="script.js"></script>
 
 </body>
 </html>

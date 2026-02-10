@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khan Saqib | Browser Benchmark</title>
-    <meta name="description" content="Performance testing tool for web browsers.">
+    <title>Khan Saqib | Pro Benchmark</title>
+    <meta name="description" content="Advanced browser & hardware performance analysis tool.">
+    
     <link rel="stylesheet" href="../../../../../static/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -20,18 +23,116 @@
         </ul>
     </nav>
 
-    <section class="projects-section">
-        <div class="container" style="padding-top: 100px;">
-            <h2 class="section-title">System Benchmark</h2>
+    <canvas id="bgCanvas"></canvas>
+
+    <section class="bench-section">
+        <div class="container" style="padding-top: 80px;">
             
-            <div class="project-grid">
-                <div class="project-card" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                    <span class="project-tag">Performance Tool</span>
-                    <h3>Browser Analysis</h3>
-                    <p>Analyze your browser's capabilities and system performance with this comprehensive benchmark tool.</p>
-                    <button class="btn-secondary" onclick="alert('Benchmark functionality coming soon!')">Run Benchmark</button>
+            <div class="dashboard-grid">
+                
+                <div class="panel main-panel">
+                    <div class="panel-header">
+                        <h1>SYSTEM DIAGNOSTIC</h1>
+                        <div class="status-badge" id="statusBadge">READY</div>
+                    </div>
+                    
+                    <div class="device-info">
+                        <div class="info-group">
+                            <span class="label">GPU RENDERER</span>
+                            <span class="val highlight" id="infoGpuModel">Detecting...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">LOGICAL CORES</span>
+                            <span class="val" id="infoCores">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">SCREEN REFRESH</span>
+                            <span class="val" id="infoHz">Calculating...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">BATTERY</span>
+                            <span class="val" id="infoBattery">Scanning...</span>
+                        </div>
+                    </div>
+
+                    <div class="score-display">
+                        <span class="score-label">PERFORMANCE SCORE</span>
+                        <div class="score-val" id="totalScore">0000</div>
+                    </div>
+
+                    <button class="btn-run" id="btnRun" onclick="startBenchmark()">
+                        <span class="icon">⚡</span> INITIATE BENCHMARK
+                    </button>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" id="overallProgress"></div>
+                    </div>
+                </div>
+
+                <div class="test-grid">
+                    
+                    <div class="panel test-card" id="cardCpu">
+                        <div class="card-header">
+                            <h3>MULTI-CORE CPU</h3>
+                            <span class="card-status" id="statusCpu">IDLE</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val" id="resCpu">0</span>
+                            <span class="metric-unit">FLOPs</span>
+                        </div>
+                        <div class="mini-bar"><div class="fill" id="barCpu"></div></div>
+                    </div>
+
+                    <div class="panel test-card" id="cardGpu">
+                        <div class="card-header">
+                            <h3>GPU RASTERIZATION</h3>
+                            <span class="card-status" id="statusGpu">IDLE</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val" id="resGpu">0</span>
+                            <span class="metric-unit">FPS</span>
+                        </div>
+                        <div class="mini-bar"><div class="fill" id="barGpu"></div></div>
+                    </div>
+
+                    <div class="panel test-card" id="cardMem">
+                        <div class="card-header">
+                            <h3>MEMORY ALLOC</h3>
+                            <span class="card-status" id="statusMem">IDLE</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val" id="resMem">0</span>
+                            <span class="metric-unit">Ops/ms</span>
+                        </div>
+                        <div class="mini-bar"><div class="fill" id="barMem"></div></div>
+                    </div>
+
+                    <div class="panel test-card" id="cardNet">
+                        <div class="card-header">
+                            <h3>LATENCY / JITTER</h3>
+                            <span class="card-status" id="statusNet">IDLE</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val" id="resNet">0</span>
+                            <span class="metric-unit">ms</span>
+                        </div>
+                        <div class="mini-bar"><div class="fill" id="barNet"></div></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="panel terminal">
+                <div class="terminal-header">
+                    <span>> Kernel Log</span>
+                    <span class="blink">_</span>
+                </div>
+                <div class="terminal-body" id="consoleLog">
+                    <div class="log-line">System ready. Waiting for user input...</div>
                 </div>
             </div>
+
         </div>
     </section>
 
@@ -45,6 +146,8 @@
             </div>
         </div>
     </footer>
+
+    <script src="script.js"></script>
 
 </body>
 </html>

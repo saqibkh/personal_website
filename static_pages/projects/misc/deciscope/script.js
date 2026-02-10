@@ -45,6 +45,7 @@ let calibrationOffset = 0;
 let recordedData = []; 
 let stats = { max: 0, sum: 0, count: 0 };
 let startTime = null;
+let animationId = null; // To stop the loop cleanly
 
 /* --- CONTROLS --- */
 
@@ -57,6 +58,11 @@ async function startMeter() {
         
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         
+        // CRITICAL FIX: Ensure Context is Running
+        if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+        }
+
         // 1. Load the Worklet Processor
         try {
             await audioContext.audioWorklet.addModule('processor.js');
@@ -66,40 +72,38 @@ async function startMeter() {
 
         analyser = audioContext.createAnalyser();
         microphone = audioContext.createMediaStreamSource(stream);
-        
-        // 2. Create the Worklet Node
         meterNode = new AudioWorkletNode(audioContext, 'meter-processor');
 
-        analyser.smoothingTimeConstant = 0.8;
-        analyser.fftSize = 1024;
+        // FFT Size for Frequency Graph
+        analyser.smoothingTimeConstant = 0.85;
+        analyser.fftSize = 2048; // Higher resolution
 
-        // 3. Connect Graph: Mic -> Analyser -> MeterNode -> Destination
+        // Connect: Mic -> Analyser -> Meter -> Destination
         microphone.connect(analyser);
         analyser.connect(meterNode);
         meterNode.connect(audioContext.destination);
 
-        // 4. Listen for volume updates from the background thread
+        // Listen for volume updates
         meterNode.port.onmessage = (event) => {
-            if (event.data.volume) {
-                processVolume(event.data.volume);
-            }
+            if (event.data.volume) processVolume(event.data.volume);
         };
         
-        // Start Viz Loops
+        // Start Viz
+        isRecording = true;
         visualizeFrequency();
         
-        // UI Updates
-        isRecording = true;
+        // Reset Data
         startTime = new Date();
         recordedData = [];
         stats = { max: 0, sum: 0, count: 0 };
         
+        // UI Updates
         btnStart.disabled = true;
         btnStop.disabled = false;
         btnExport.disabled = true;
         statusBadge.innerText = "LIVE";
         statusBadge.classList.add('active');
-        log("Microphone connected. AudioWorklet Active.");
+        log("Microphone connected. Audio engine active.");
 
     } catch (err) {
         log("Error: " + err.message, "warn");
@@ -110,11 +114,11 @@ async function startMeter() {
 function stopMeter() {
     if (!isRecording) return;
     
+    // Stop Animation Loop
+    if (animationId) cancelAnimationFrame(animationId);
+
     // Clean up nodes
-    if (meterNode) {
-        meterNode.disconnect();
-        meterNode = null;
-    }
+    if (meterNode) { meterNode.disconnect(); meterNode = null; }
     if (analyser) analyser.disconnect();
     if (microphone) microphone.disconnect();
     if (audioContext) audioContext.close();
@@ -125,32 +129,30 @@ function stopMeter() {
     btnExport.disabled = false;
     statusBadge.innerText = "STOPPED";
     statusBadge.classList.remove('active');
+    
+    // Clear visualization
+    const canvas = document.getElementById('freqCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
     log("Monitoring stopped. Data ready for export.");
 }
 
 /* --- AUDIO PROCESSING --- */
 
 function processVolume(rms) {
-    // Convert to Decibels
-    // We add a base offset (~100) to normalize typical mic input to SPL-like values
-    // Calibration is applied here in the UI thread
     let db = 20 * Math.log10(rms) + 100 + parseFloat(calibrationOffset);
-    
-    if (db < 0) db = 0; // Clamp negative
-    if (!isFinite(db)) db = 0;
-
+    if (db < 0 || !isFinite(db)) db = 0;
     updateDashboard(db);
 }
 
 function updateDashboard(db) {
-    // 1. Digital Readout
     dbReadout.innerText = db.toFixed(1);
     
-    if (db > 85) dbReadout.style.color = "#ef4444"; // Danger
-    else if (db > 70) dbReadout.style.color = "#f59e0b"; // Warning
+    if (db > 85) dbReadout.style.color = "#ef4444"; 
+    else if (db > 70) dbReadout.style.color = "#f59e0b"; 
     else dbReadout.style.color = "#fff";
 
-    // 2. Stats
     if (db > stats.max) stats.max = db;
     stats.sum += db;
     stats.count++;
@@ -158,13 +160,12 @@ function updateDashboard(db) {
     valMax.innerText = stats.max.toFixed(1);
     valAvg.innerText = (stats.sum / stats.count).toFixed(1);
 
-    // 3. Chart Update
+    // Chart Update
     const chartData = historyChart.data.datasets[0].data;
     chartData.shift();
     chartData.push(db);
     historyChart.update();
 
-    // 4. Record Data
     recordedData.push({
         time: (new Date() - startTime) / 1000, 
         db: db.toFixed(2)
@@ -178,26 +179,38 @@ function visualizeFrequency() {
     
     const canvas = document.getElementById('freqCanvas');
     const ctx = canvas.getContext('2d');
+    
+    // CRITICAL FIX: Match Internal Resolution to Display Size
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
     function draw() {
         if (!isRecording) return;
-        requestAnimationFrame(draw);
+        animationId = requestAnimationFrame(draw);
 
         analyser.getByteFrequencyData(dataArray);
 
+        // Clear with background color
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        // Calculate Bar Width based on actual canvas width
         const barWidth = (canvas.width / bufferLength) * 2.5;
         let barHeight;
         let x = 0;
 
         for (let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i] / 2;
+            barHeight = (dataArray[i] / 255) * canvas.height; // Normalize height
 
-            ctx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
+            // Color Gradient based on frequency volume
+            const r = barHeight + 50; 
+            const g = 255 - barHeight; 
+            const b = 50;
+
+            ctx.fillStyle = `rgb(${r},${g},${b})`;
             ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
 
             x += barWidth + 1;

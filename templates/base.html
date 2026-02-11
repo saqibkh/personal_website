@@ -11,6 +11,13 @@
 
     <nav class="navbar">
         <div class="logo">SAQIB KHAN</div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
         <ul class="nav-links">
 	    <li><a href="{{ url_for('home') }}" class="{% if title == 'About Me' %}active{% endif %}">About</a></li>
             <li><a href="{{ url_for('projects') }}" class="{% if title == 'Projects' %}active{% endif %}">Projects</a></li>
@@ -31,6 +38,17 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+    </script>
 
 </body>
 </html>

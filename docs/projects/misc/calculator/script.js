@@ -88,12 +88,14 @@ function calculate() {
         expression = expression.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**'); 
         
         let result = eval(expression);
-        
-        if (!Number.isInteger(result)) {
-            result = parseFloat(result.toFixed(8));
-        }
-        display.innerText = result;
 
+        // FIX: Handle floating point precision errors
+        if (!Number.isInteger(result)) {
+            // Limits to 10 decimal places and strips trailing zeros
+            result = parseFloat(result.toFixed(10)); 
+        }
+
+        display.innerText = result;
     } catch (error) {
         display.innerText = 'Error';
         setTimeout(clearDisplay, 1500);

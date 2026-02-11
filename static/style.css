@@ -66,10 +66,10 @@ ul { list-style: none; }
 
 /* HERO SECTION */
 .hero {
-    height: 90vh;
+    min-height: 100vh;          /* Changed from height: 90vh to prevent cutoff on small screens */
     display: flex;
     align-items: center;
-    padding: 0 5%;
+    padding: 120px 5% 0;        /* ADDED: 120px top padding to push content below Navbar */
 }
 
 .hero h1 {

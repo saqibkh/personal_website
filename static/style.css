@@ -66,10 +66,10 @@ ul { list-style: none; }
 
 /* HERO SECTION */
 .hero {
-    height: 90vh;
+    min-height: 100vh;          /* Changed from height: 90vh to prevent cutoff on small screens */
     display: flex;
     align-items: center;
-    padding: 0 5%;
+    padding: 120px 5% 0;        /* ADDED: 120px top padding to push content below Navbar */
 }
 
 .hero h1 {
@@ -106,7 +106,7 @@ ul { list-style: none; }
 
 .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
 }
 
@@ -235,4 +235,8 @@ footer h2 { font-size: 2rem; margin-bottom: 1rem; }
     .profile-header { flex-direction: column; text-align: center; }
     .resume-grid { grid-template-columns: 1fr; }
     .social-links { justify-content: center; }
+}
+
+html {
+    scroll-behavior: smooth;
 }

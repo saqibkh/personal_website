@@ -117,6 +117,30 @@ APPS = {
             "tag": "Android Native",
             "desc": "A native Android application focused on audio manipulation and creative sound design.",
             "link": "#"
+        },
+        {
+            "name": "WarmMeUp",
+            "tag": "Android Native",
+            "desc": "Virtual handwarmer with heat simulation, vibration, and customizable themes.",
+            "link": "#"
+        },
+        {
+            "name": "Calculator",
+            "tag": "Android Native",
+            "desc": "All-in-one calculator: Standard, Scientific & Programmer modes with themes.",
+            "link": "#"
+        },
+        {
+            "name": "SproutSpace",
+            "tag": "Android Native",
+            "desc": "SproutSpace is the all-in-one digital companion for modern gardeners. Whether you are planning a small balcony box or a full backyard homestead, SproutSpace helps you visualize your layout and stay on top of daily care.",
+            "link": "#"
+        },
+        {
+            "name": "Paddle_Smash",
+            "tag": "Android Native",
+            "desc": "A fast-paced arcade brick-breaker with modern visuals and smooth controls!",
+            "link": "#"
         }
     ],
     "ios": []

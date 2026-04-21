@@ -58,7 +58,7 @@ PROJECTS = [
         "name": "Pantheon",
         "tag": "Hardware & Performance",
         "desc": "A GPU workload stress-testing tool designed to push hardware limits and analyze performance stability.",
-        "link": "https://saqibkh.github.io/pantheon"
+        "link": "https://saqibkh.github.io/pantheongpu_website"
     },
     {
         "name": "Muslim Name Vault",
@@ -169,4 +169,7 @@ def serve_projects(filename):
         
     return send_from_directory('static_pages/projects/misc', filename)
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Try to get port from environment, otherwise default to 5001
+    # This avoids the common port 5000 conflict entirely
+    port = int(os.environ.get('PORT', 5001))
+    app.run(debug=True, host='0.0.0.0', port=port)

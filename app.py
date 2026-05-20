@@ -55,6 +55,12 @@ SKILLS = {
 # --- PORTFOLIO DATA ---
 PROJECTS = [
     {
+        "name": "NilPDF",
+        "tag": "Web Application",
+        "desc": "A free, browser-based PDF toolkit — merge, split, compress, convert, and more without uploading your files to a server.",
+        "link": "https://nilpdf.com"
+    },
+    {
         "name": "Pantheon",
         "tag": "Hardware & Performance",
         "desc": "A GPU workload stress-testing tool designed to push hardware limits and analyze performance stability.",

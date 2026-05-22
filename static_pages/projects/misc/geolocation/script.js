@@ -137,7 +137,10 @@ function handleError(error) {
 /* --- CONTROLS --- */
 
 function startTracking() {
-    if (!navigator.geolocation) return alert("Not Supported");
+    if (!navigator.geolocation) {
+        elTime.innerText = 'Geolocation not supported by this browser';
+        return;
+    }
 
     btnStart.disabled = true;
     btnStop.disabled = false;
@@ -167,7 +170,10 @@ function stopTracking() {
 }
 
 function exportData() {
-    if (pathCoords.length === 0) return alert("No data to export");
+    if (pathCoords.length === 0) {
+        elTime.innerText = 'No data yet — start tracking first';
+        return;
+    }
     
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pathCoords));
     const downloadAnchor = document.createElement('a');

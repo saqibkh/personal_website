@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import datetime
 from app import app
@@ -39,7 +40,8 @@ def build_site():
                     f.write(response.data.decode('utf-8'))
                 print(f"✔ Generated {filename}")
             else:
-                print(f"❌ Failed to generate {filename}")
+                print(f"❌ Failed to generate {filename} (HTTP {response.status_code})")
+                sys.exit(1)
 
     # 5. Generate CNAME (For Custom Domain)
     print("🌐 Generating CNAME...")

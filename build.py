@@ -83,10 +83,8 @@ def generate_sitemap(main_pages):
     date_str = datetime.date.today().isoformat()
     
     for url in urls:
-        # Remove trailing slash if double (except for root)
+        # Fix any accidental double slashes
         final_url = url.replace('//', '/').replace('https:/', 'https://')
-        if final_url.endswith('/') and final_url != f"{BASE_URL}/":
-            final_url = final_url.rstrip('/')
 
         sitemap_content += f'  <url>\n'
         sitemap_content += f'    <loc>{final_url}</loc>\n'

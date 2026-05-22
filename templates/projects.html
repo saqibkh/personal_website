@@ -10,7 +10,8 @@
                 <span class="project-tag">{{ project.tag }}</span>
                 <h3>{{ project.name }}</h3>
                 <p>{{ project.desc }}</p>
-                <a href="{{ project.link }}" class="project-link">View Project →</a>
+                <a href="{{ project.link }}" class="project-link"
+                   {% if project.link.startswith('http') %}target="_blank" rel="noopener noreferrer"{% endif %}>View Project →</a>
             </div>
             {% endfor %}
         </div>

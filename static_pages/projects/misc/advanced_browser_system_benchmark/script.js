@@ -106,14 +106,14 @@ async function startBenchmark() {
     log("Initializing extended stability tests...", "info");
 
     try {
-        // 1. CPU: Extended Matrix Math (5 Seconds)
+        // 1. CPU: Matrix Math (2 seconds, non-blocking)
         updateStatus('Cpu', 'CALCULATING');
         progressBar.style.width = "25%";
         scores.cpu = await runCpuTest();
         updateResult('Cpu', scores.cpu.toLocaleString(), 'Ops');
         log(`CPU Stress Result: ${scores.cpu} Ops (Stable)`);
 
-        // 2. Memory: Sustained Allocation (4 Seconds)
+        // 2. Memory: Sustained Allocation (2 seconds, non-blocking)
         updateStatus('Mem', 'ALLOCATING');
         progressBar.style.width = "50%";
         scores.mem = await runMemoryTest();

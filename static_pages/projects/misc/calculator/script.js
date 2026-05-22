@@ -194,7 +194,8 @@ function setMode(mode, btn) {
         container.classList.add('wide-mode');
         keypad.classList.add('scientific-grid');
         document.querySelectorAll('.sci-key').forEach(k => k.classList.add('visible'));
-    } 
+        history.innerText = 'rad mode';
+    }
     else if (mode === 'programmer') {
         container.classList.add('wide-mode');
         keypad.classList.add('programmer-grid');

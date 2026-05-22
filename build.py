@@ -85,8 +85,8 @@ def generate_sitemap(main_pages):
     for url in urls:
         # Remove trailing slash if double (except for root)
         final_url = url.replace('//', '/').replace('https:/', 'https://')
-        if final_url.endswith('/') and len(final_url) > 22: # > len(https://khansaqib.com/)
-             final_url = final_url.rstrip('/')
+        if final_url.endswith('/') and final_url != f"{BASE_URL}/":
+            final_url = final_url.rstrip('/')
 
         sitemap_content += f'  <url>\n'
         sitemap_content += f'    <loc>{final_url}</loc>\n'

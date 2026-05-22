@@ -85,9 +85,13 @@ function calculate() {
 
         let expression = display.innerText;
         history.innerText = expression + ' =';
-        expression = expression.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**'); 
-        
-        let result = eval(expression);
+        expression = expression.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**');
+
+        // Security: whitelist-validate before evaluation (blocks any JS injection)
+        if (!/^[0-9+\-*/%().\se]+$/i.test(expression)) {
+            throw new Error("Invalid expression");
+        }
+        let result = Function('"use strict"; return (' + expression + ')')();
 
         // FIX: Handle floating point precision errors
         if (!Number.isInteger(result)) {
@@ -169,14 +173,14 @@ function updateKeypadState() {
 }
 
 /* --- MODE SWITCHING --- */
-function setMode(mode) {
+function setMode(mode, btn) {
     currentMode = mode;
-    currentBase = 10; 
+    currentBase = 10;
     clearDisplay();
 
     // UI Updates
     document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
+    btn.classList.add('active');
 
     // Reset Styles
     keypad.className = 'keypad';

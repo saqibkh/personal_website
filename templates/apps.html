@@ -8,20 +8,34 @@
         <div class="project-grid">
             {% for app in apps.android %}
             <div class="project-card">
-                <span class="project-tag" style="color: #3ddc84;">{{ app.tag }}</span>
+                <span class="project-tag android-tag">{{ app.tag }}</span>
                 <h3>{{ app.name }}</h3>
                 <p>{{ app.desc }}</p>
-                <a href="{{ app.link }}" class="project-link">View on Play Store →</a>
+                {% if app.link != '#' %}
+                <a href="{{ app.link }}" target="_blank" rel="noopener noreferrer" class="project-link">View on Play Store →</a>
+                {% else %}
+                <span class="project-link coming-soon">Coming Soon</span>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
 
-        <br><br><br>
+        <div class="section-spacer"></div>
 
         <h2 class="section-title">iOS Applications</h2>
         {% if apps.ios %}
             <div class="project-grid">
                 {% for app in apps.ios %}
+                <div class="project-card">
+                    <span class="project-tag ios-tag">{{ app.tag }}</span>
+                    <h3>{{ app.name }}</h3>
+                    <p>{{ app.desc }}</p>
+                    {% if app.link != '#' %}
+                    <a href="{{ app.link }}" target="_blank" rel="noopener noreferrer" class="project-link">View on App Store →</a>
+                    {% else %}
+                    <span class="project-link coming-soon">Coming Soon</span>
+                    {% endif %}
+                </div>
                 {% endfor %}
             </div>
         {% else %}

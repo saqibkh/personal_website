@@ -14,8 +14,8 @@
                 <p class="subtitle">{{ bio.text }}</p>
                 
                 <div class="social-links">
-                    <a href="{{ bio.github }}" target="_blank" class="btn-text">GitHub ↗</a>
-                    <a href="{{ bio.linkedin }}" target="_blank" class="btn-text">LinkedIn ↗</a>
+                    <a href="{{ bio.github }}" target="_blank" rel="noopener noreferrer" class="btn-text">GitHub ↗</a>
+                    <a href="{{ bio.linkedin }}" target="_blank" rel="noopener noreferrer" class="btn-text">LinkedIn ↗</a>
                     <a href="mailto:{{ bio.email }}" class="btn-text">Email ↗</a>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                     </div>
                 </div>
 
-                <br><br>
+                <div class="section-spacer"></div>
 
                 <h2 class="section-title">Education</h2>
                 {% for edu in education %}
@@ -71,7 +71,7 @@
                 </div>
                 {% endfor %}
 
-                <br><br>
+                <div class="section-spacer"></div>
 
                 <h2 class="section-title">Hobbies</h2>
                 <ul class="hobby-list">

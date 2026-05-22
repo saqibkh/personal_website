@@ -109,7 +109,7 @@ function updateStats(position) {
     // Update UI
     elLat.innerText = lat.toFixed(5);
     elLng.innerText = lng.toFixed(5);
-    elSpeed.innerText = coords.speed ? (coords.speed * 3.6).toFixed(1) : '0.0';
+    elSpeed.innerText = (coords.speed !== null && coords.speed !== undefined) ? (coords.speed * 3.6).toFixed(1) : '--';
     elDist.innerText = (totalDistance / 1000).toFixed(2); // KM
     elTime.innerText = new Date().toLocaleTimeString();
 

@@ -131,7 +131,7 @@ function updateStats(position) {
 
 function handleError(error) {
     stopTracking();
-    alert("Location Error: " + error.message);
+    elTime.innerText = "Error: " + error.message;
 }
 
 /* --- CONTROLS --- */

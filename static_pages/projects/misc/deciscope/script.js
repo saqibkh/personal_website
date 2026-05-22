@@ -107,7 +107,6 @@ async function startMeter() {
 
     } catch (err) {
         log("Error: " + err.message, "warn");
-        alert("Error: " + err.message);
     }
 }
 

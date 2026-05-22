@@ -124,7 +124,7 @@ async function startBenchmark() {
         updateStatus('Net', 'PINGING');
         progressBar.style.width = "75%";
         scores.net = await runNetworkTest();
-        updateResult('Net', scores.net + "ms", 'Avg Latency');
+        updateResult('Net', scores.net, 'Avg Latency');
         log(`Network Average: ${scores.net}ms`);
 
         // 4. GPU: High-Stress Render (4 Seconds)
@@ -152,48 +152,56 @@ async function startBenchmark() {
 /* --- EXTENDED TEST LOGIC --- */
 
 function runCpuTest() {
+    // Uses requestAnimationFrame to yield control back to the browser every ~16ms,
+    // preventing the tab from freezing. Total test runs for 2 seconds.
     return new Promise(resolve => {
-        setTimeout(() => {
-            const start = performance.now();
-            let ops = 0;
-            const duration = 5000; // Increased to 5000ms (5s)
-            
-            // Loop until duration is met
-            while (performance.now() - start < duration) {
-                // Heavier Math workload
-                for(let i=0; i<1000; i++) {
+        const duration = 2000;
+        const start = performance.now();
+        let ops = 0;
+
+        function chunk() {
+            const chunkStart = performance.now();
+            // Work for one frame (~16ms), then yield
+            while (performance.now() - chunkStart < 16) {
+                for (let i = 0; i < 1000; i++) {
                     Math.sqrt(Math.random() * 10000) * Math.sin(Math.random()) / Math.tan(Math.random());
                 }
                 ops++;
             }
-            
-            // Score = Operations per millisecond (Higher is better)
-            resolve(Math.floor(ops / (duration / 1000))); 
-        }, 200);
+            if (performance.now() - start < duration) {
+                requestAnimationFrame(chunk);
+            } else {
+                resolve(Math.floor(ops / (duration / 1000)));
+            }
+        }
+        requestAnimationFrame(chunk);
     });
 }
 
 function runMemoryTest() {
+    // Same chunked approach — yields every frame so the UI stays responsive.
     return new Promise(resolve => {
-        setTimeout(() => {
-            const start = performance.now();
-            const duration = 4000; // Increased to 4000ms (4s)
-            let ops = 0;
-            
-            while (performance.now() - start < duration) {
+        const duration = 2000;
+        const start = performance.now();
+        let ops = 0;
+
+        function chunk() {
+            const chunkStart = performance.now();
+            while (performance.now() - chunkStart < 16) {
                 const arr = [];
-                // Alloc/Dealloc 50k objects per loop
-                for(let i=0; i<50000; i++) {
-                    arr.push({a: Math.random(), b: new Date(), c: "string payload"});
+                for (let i = 0; i < 50000; i++) {
+                    arr.push({ a: Math.random(), b: new Date(), c: "string payload" });
                 }
                 ops++;
-                // Let GC clean up by letting 'arr' go out of scope
             }
-            
-            // Score based on iterations completed
-            const time = (performance.now() - start) / 1000;
-            resolve(Math.floor((ops * 50000) / time / 1000)); // Normalized
-        }, 300);
+            if (performance.now() - start < duration) {
+                requestAnimationFrame(chunk);
+            } else {
+                const time = (performance.now() - start) / 1000;
+                resolve(Math.floor((ops * 50000) / time / 1000));
+            }
+        }
+        requestAnimationFrame(chunk);
     });
 }
 
@@ -306,3 +314,5 @@ function initCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
+
+window.addEventListener('resize', initCanvas);

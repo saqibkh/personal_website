@@ -55,6 +55,24 @@ SKILLS = {
 # --- PORTFOLIO DATA ---
 PROJECTS = [
     {
+        "name": "UptimeHelm",
+        "tag": "Web & DevOps",
+        "desc": "Free website monitoring with uptime tracking, security checks, and AI-powered vulnerability assessments.",
+        "link": "http://www.uptimehelm.com/"
+    },
+    {
+        "name": "TerraScoutX",
+        "tag": "Web & Data",
+        "desc": "Texas property intelligence platform generating due-diligence reports on flood risk, tax burden, permits, and legal considerations.",
+        "link": "https://terrascoutx.com/"
+    },
+    {
+        "name": "CrashPilotX",
+        "tag": "Systems & AI",
+        "desc": "AI-powered Linux crash forensics tool for diagnosing and investigating system crashes.",
+        "link": "https://crashpilotx.com/"
+    },
+    {
         "name": "NilPDF",
         "tag": "Web Application",
         "desc": "A free, browser-based PDF toolkit — merge, split, compress, convert, and more without uploading your files to a server.",

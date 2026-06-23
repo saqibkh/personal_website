@@ -48,6 +48,9 @@ def build_site():
     with open(f'{OUTPUT_DIR}/CNAME', 'w') as f:
         f.write("khansaqib.com")
 
+    # 5b. Copy favicon.ico to site root (covers crawlers that ignore <link> tags)
+    shutil.copy(f'{OUTPUT_DIR}/static/favicon.ico', f'{OUTPUT_DIR}/favicon.ico')
+
     # 6. Generate Sitemap.xml (For SEO)
     print("🗺️  Generating Sitemap...")
     generate_sitemap(main_pages)

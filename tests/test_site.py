@@ -83,6 +83,24 @@ class TestSEO:
         r = client.get(route)
         assert b"Khan Saqib" in r.data
 
+    @pytest.mark.parametrize("route", ["/", "/projects", "/apps"])
+    def test_favicon_link_present(self, client, route):
+        r = client.get(route)
+        assert b'rel="icon"' in r.data, f"{route} missing favicon <link rel='icon'>"
+
+    @pytest.mark.parametrize("route", ["/", "/projects", "/apps"])
+    def test_apple_touch_icon_present(self, client, route):
+        r = client.get(route)
+        assert b'apple-touch-icon' in r.data, f"{route} missing apple-touch-icon link"
+
+    @pytest.mark.parametrize("filename", [
+        "favicon.svg", "favicon-16x16.png", "favicon-32x32.png",
+        "favicon.ico", "apple-touch-icon.png",
+    ])
+    def test_favicon_asset_exists_on_disk(self, filename):
+        path = os.path.join(os.path.dirname(__file__), "..", "static", filename)
+        assert os.path.exists(path), f"Missing favicon asset: static/{filename}"
+
 
 # ── Security / link hygiene ───────────────────────────────────────────────────
 
@@ -213,6 +231,9 @@ class TestBuild:
 
     def test_static_assets_copied(self):
         assert (self.out / "static" / "style.css").exists()
+
+    def test_favicon_copied_to_site_root(self):
+        assert (self.out / "favicon.ico").exists(), "favicon.ico missing from docs root"
 
     def test_cname_contains_correct_domain(self):
         assert (self.out / "CNAME").read_text().strip() == "khansaqib.com"

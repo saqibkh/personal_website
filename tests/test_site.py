@@ -130,6 +130,13 @@ class TestDataIntegrity:
         for p in PROJECTS:
             assert p.get("desc"), f"Project '{p.get('name')}' has an empty description"
 
+    def test_no_external_project_link_uses_plain_http(self):
+        for p in PROJECTS:
+            link = p.get("link", "")
+            assert not link.startswith("http://"), (
+                f"Project '{p['name']}' links to insecure http:// — should be https://"
+            )
+
     def test_all_projects_have_link(self):
         for p in PROJECTS:
             assert p.get("link"), f"Project '{p.get('name')}' has no link"

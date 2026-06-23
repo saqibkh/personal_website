@@ -58,7 +58,7 @@ PROJECTS = [
         "name": "UptimeHelm",
         "tag": "Web & DevOps",
         "desc": "Free website monitoring with uptime tracking, security checks, and AI-powered vulnerability assessments.",
-        "link": "http://www.uptimehelm.com/"
+        "link": "https://www.uptimehelm.com/"
     },
     {
         "name": "TerraScoutX",

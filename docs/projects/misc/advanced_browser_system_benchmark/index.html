@@ -15,6 +15,11 @@
 
     <nav class="navbar">
         <div class="logo">SAQIB KHAN</div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
         <ul class="nav-links">
             <li><a href="/">About</a></li>
             <li><a href="/projects">Projects</a></li>
@@ -148,6 +153,16 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+        }
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => navLinks.classList.remove('active'));
+        });
+    </script>
 
 </body>
 </html>

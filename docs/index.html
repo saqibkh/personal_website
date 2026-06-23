@@ -13,6 +13,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khan Saqib | About Me</title>
+    <meta name="description" content="Saqib Khan — Electrical &amp; Computer Engineer specializing in high-performance computing, GPU validation, and firmware development.">
+    <meta property="og:title" content="Khan Saqib | About Me">
+    <meta property="og:description" content="Saqib Khan — Electrical &amp; Computer Engineer specializing in high-performance computing, GPU validation, and firmware development.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://khansaqib.com">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Khan Saqib | About Me">
+    <meta name="twitter:description" content="Saqib Khan — Electrical &amp; Computer Engineer specializing in high-performance computing, GPU validation, and firmware development.">
+    <link rel="canonical" href="https://khansaqib.com">
     <link rel="stylesheet" href="static/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -49,8 +58,8 @@
                 <p class="subtitle">I’m Saqib Khan, an Electrical and Computer Engineer with deep expertise in high-performance computing, CPU and GPU validation, and system-level firmware development. I specialize in building robust simulation models, automating complex testing frameworks, and optimizing memory and processor performance.</p>
                 
                 <div class="social-links">
-                    <a href="https://github.com/saqibkh" target="_blank" class="btn-text">GitHub ↗</a>
-                    <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank" class="btn-text">LinkedIn ↗</a>
+                    <a href="https://github.com/saqibkh" target="_blank" rel="noopener noreferrer" class="btn-text">GitHub ↗</a>
+                    <a href="https://www.linkedin.com/in/saqib-khan-2a0ab164/" target="_blank" rel="noopener noreferrer" class="btn-text">LinkedIn ↗</a>
                     <a href="mailto:saqibkhan@utexas.edu" class="btn-text">Email ↗</a>
                 </div>
             </div>
@@ -136,7 +145,7 @@
                     </div>
                 </div>
 
-                <br><br>
+                <div class="section-spacer"></div>
 
                 <h2 class="section-title">Education</h2>
                 
@@ -153,7 +162,7 @@
                 </div>
                 
 
-                <br><br>
+                <div class="section-spacer"></div>
 
                 <h2 class="section-title">Hobbies</h2>
                 <ul class="hobby-list">
@@ -189,6 +198,13 @@
                 navLinks.classList.toggle('active');
             });
         }
+
+        // Close the mobile menu whenever any nav link is tapped
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
     </script>
 
 </body>

@@ -13,6 +13,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khan Saqib | Apps</title>
+    <meta name="description" content="Android and iOS mobile apps by Saqib Khan — calculators, soundscapes, gardening tools, and more.">
+    <meta property="og:title" content="Khan Saqib | Apps">
+    <meta property="og:description" content="Android and iOS mobile apps by Saqib Khan — calculators, soundscapes, gardening tools, and more.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://khansaqib.com">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Khan Saqib | Apps">
+    <meta name="twitter:description" content="Android and iOS mobile apps by Saqib Khan — calculators, soundscapes, gardening tools, and more.">
+    <link rel="canonical" href="https://khansaqib.com">
     <link rel="stylesheet" href="static/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -43,43 +52,53 @@
         <div class="project-grid">
             
             <div class="project-card">
-                <span class="project-tag" style="color: #3ddc84;">Android Native</span>
+                <span class="project-tag android-tag">Android Native</span>
                 <h3>SoundCanvas</h3>
                 <p>A native Android application focused on audio manipulation and creative sound design.</p>
-                <a href="#" class="project-link">View on Play Store →</a>
+                
+                <span class="project-link coming-soon">Coming Soon</span>
+                
             </div>
             
             <div class="project-card">
-                <span class="project-tag" style="color: #3ddc84;">Android Native</span>
+                <span class="project-tag android-tag">Android Native</span>
                 <h3>WarmMeUp</h3>
                 <p>Virtual handwarmer with heat simulation, vibration, and customizable themes.</p>
-                <a href="#" class="project-link">View on Play Store →</a>
+                
+                <span class="project-link coming-soon">Coming Soon</span>
+                
             </div>
             
             <div class="project-card">
-                <span class="project-tag" style="color: #3ddc84;">Android Native</span>
+                <span class="project-tag android-tag">Android Native</span>
                 <h3>Calculator</h3>
                 <p>All-in-one calculator: Standard, Scientific &amp; Programmer modes with themes.</p>
-                <a href="#" class="project-link">View on Play Store →</a>
+                
+                <span class="project-link coming-soon">Coming Soon</span>
+                
             </div>
             
             <div class="project-card">
-                <span class="project-tag" style="color: #3ddc84;">Android Native</span>
+                <span class="project-tag android-tag">Android Native</span>
                 <h3>SproutSpace</h3>
-                <p>SproutSpace is the all-in-one digital companion for modern gardeners. Whether you are planning a small balcony box or a full backyard homestead, SproutSpace helps you visualize your layout and stay on top of daily care.</p>
-                <a href="#" class="project-link">View on Play Store →</a>
+                <p>All-in-one gardening companion — plan your layout, track planting schedules, and manage daily plant care.</p>
+                
+                <span class="project-link coming-soon">Coming Soon</span>
+                
             </div>
             
             <div class="project-card">
-                <span class="project-tag" style="color: #3ddc84;">Android Native</span>
+                <span class="project-tag android-tag">Android Native</span>
                 <h3>Paddle_Smash</h3>
                 <p>A fast-paced arcade brick-breaker with modern visuals and smooth controls!</p>
-                <a href="#" class="project-link">View on Play Store →</a>
+                
+                <span class="project-link coming-soon">Coming Soon</span>
+                
             </div>
             
         </div>
 
-        <br><br><br>
+        <div class="section-spacer"></div>
 
         <h2 class="section-title">iOS Applications</h2>
         
@@ -112,6 +131,13 @@
                 navLinks.classList.toggle('active');
             });
         }
+
+        // Close the mobile menu whenever any nav link is tapped
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
     </script>
 
 </body>

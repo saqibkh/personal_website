@@ -109,7 +109,7 @@ function updateStats(position) {
     // Update UI
     elLat.innerText = lat.toFixed(5);
     elLng.innerText = lng.toFixed(5);
-    elSpeed.innerText = coords.speed ? (coords.speed * 3.6).toFixed(1) : '0.0';
+    elSpeed.innerText = (coords.speed !== null && coords.speed !== undefined) ? (coords.speed * 3.6).toFixed(1) : '--';
     elDist.innerText = (totalDistance / 1000).toFixed(2); // KM
     elTime.innerText = new Date().toLocaleTimeString();
 
@@ -131,13 +131,16 @@ function updateStats(position) {
 
 function handleError(error) {
     stopTracking();
-    alert("Location Error: " + error.message);
+    elTime.innerText = "Error: " + error.message;
 }
 
 /* --- CONTROLS --- */
 
 function startTracking() {
-    if (!navigator.geolocation) return alert("Not Supported");
+    if (!navigator.geolocation) {
+        elTime.innerText = 'Geolocation not supported by this browser';
+        return;
+    }
 
     btnStart.disabled = true;
     btnStop.disabled = false;
@@ -167,7 +170,10 @@ function stopTracking() {
 }
 
 function exportData() {
-    if (pathCoords.length === 0) return alert("No data to export");
+    if (pathCoords.length === 0) {
+        elTime.innerText = 'No data yet — start tracking first';
+        return;
+    }
     
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pathCoords));
     const downloadAnchor = document.createElement('a');

@@ -55,6 +55,24 @@ SKILLS = {
 # --- PORTFOLIO DATA ---
 PROJECTS = [
     {
+        "name": "UptimeHelm",
+        "tag": "Web & DevOps",
+        "desc": "Free website monitoring with uptime tracking, security checks, and AI-powered vulnerability assessments.",
+        "link": "https://www.uptimehelm.com/"
+    },
+    {
+        "name": "TerraScoutX",
+        "tag": "Web & Data",
+        "desc": "Texas property intelligence platform generating due-diligence reports on flood risk, tax burden, permits, and legal considerations.",
+        "link": "https://terrascoutx.com/"
+    },
+    {
+        "name": "CrashPilotX",
+        "tag": "Systems & AI",
+        "desc": "AI-powered Linux crash forensics tool for diagnosing and investigating system crashes.",
+        "link": "https://crashpilotx.com/"
+    },
+    {
         "name": "NilPDF",
         "tag": "Web Application",
         "desc": "A free, browser-based PDF toolkit — merge, split, compress, convert, and more without uploading your files to a server.",
@@ -81,7 +99,7 @@ PROJECTS = [
     {
         "name": "Cloud Sound YouTube Channel",
         "tag": "Youtube Channel",
-        "desc": "",
+        "desc": "Ambient and atmospheric soundscapes for focus, relaxation, and deep work.",
         "link": "https://www.youtube.com/@Cloud__Sound"
     },
     {
@@ -105,7 +123,7 @@ PROJECTS = [
     {
         "name": "Deciscope",
         "tag": "Web Application",
-        "desc": "",
+        "desc": "Real-time browser-based decibel meter and frequency analyzer for noise monitoring.",
         "link": "/projects/misc/deciscope/"
     },
     {
@@ -139,7 +157,7 @@ APPS = {
         {
             "name": "SproutSpace",
             "tag": "Android Native",
-            "desc": "SproutSpace is the all-in-one digital companion for modern gardeners. Whether you are planning a small balcony box or a full backyard homestead, SproutSpace helps you visualize your layout and stay on top of daily care.",
+            "desc": "All-in-one gardening companion — plan your layout, track planting schedules, and manage daily plant care.",
             "link": "#"
         },
         {
@@ -155,15 +173,18 @@ APPS = {
 
 @app.route('/')
 def home():
-    return render_template('index.html', title="About Me", bio=BIO, experience=EXPERIENCE, education=EDUCATION, skills=SKILLS)
+    return render_template('index.html', title="About Me", bio=BIO, experience=EXPERIENCE, education=EDUCATION, skills=SKILLS,
+        description="Saqib Khan — Electrical & Computer Engineer specializing in high-performance computing, GPU validation, and firmware development.")
 
-@app.route('/projects')  # Changed from /projects.html
+@app.route('/projects')
 def projects():
-    return render_template('projects.html', title="Projects", projects=PROJECTS)
+    return render_template('projects.html', title="Projects", projects=PROJECTS,
+        description="Technical projects by Saqib Khan — GPU stress tools, web apps, databases, and Android apps.")
 
-@app.route('/apps')      # Changed from /apps.html
+@app.route('/apps')
 def apps():
-    return render_template('apps.html', title="Apps", apps=APPS)
+    return render_template('apps.html', title="Apps", apps=APPS,
+        description="Android and iOS mobile apps by Saqib Khan — calculators, soundscapes, gardening tools, and more.")
 
 @app.route('/projects/misc/<path:filename>')
 def serve_projects(filename):

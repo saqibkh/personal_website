@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import datetime
 from app import app
@@ -39,7 +40,8 @@ def build_site():
                     f.write(response.data.decode('utf-8'))
                 print(f"✔ Generated {filename}")
             else:
-                print(f"❌ Failed to generate {filename}")
+                print(f"❌ Failed to generate {filename} (HTTP {response.status_code})")
+                sys.exit(1)
 
     # 5. Generate CNAME (For Custom Domain)
     print("🌐 Generating CNAME...")
@@ -83,10 +85,8 @@ def generate_sitemap(main_pages):
     date_str = datetime.date.today().isoformat()
     
     for url in urls:
-        # Remove trailing slash if double (except for root)
+        # Fix any accidental double slashes
         final_url = url.replace('//', '/').replace('https:/', 'https://')
-        if final_url.endswith('/') and len(final_url) > 22: # > len(https://khansaqib.com/)
-             final_url = final_url.rstrip('/')
 
         sitemap_content += f'  <url>\n'
         sitemap_content += f'    <loc>{final_url}</loc>\n'

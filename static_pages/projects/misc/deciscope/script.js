@@ -107,7 +107,6 @@ async function startMeter() {
 
     } catch (err) {
         log("Error: " + err.message, "warn");
-        alert("Error: " + err.message);
     }
 }
 
@@ -227,7 +226,7 @@ function updateCalibration(val) {
 }
 
 function exportData() {
-    if (recordedData.length === 0) return alert("No data to export");
+    if (recordedData.length === 0) return log("No data to export yet. Start monitoring first.", "warn");
     
     let csvContent = "data:text/csv;charset=utf-8,Time (s),Decibels (dB)\n";
     recordedData.forEach(row => {
@@ -237,7 +236,8 @@ function exportData() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `deciscope_log_${new Date().toISOString()}.csv`);
+    const safeDate = new Date().toISOString().replace(/[:.]/g, '-');
+    link.setAttribute("download", `deciscope_log_${safeDate}.csv`);
     document.body.appendChild(link);
     link.click();
     link.remove();

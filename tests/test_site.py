@@ -93,6 +93,23 @@ class TestSEO:
         r = client.get(route)
         assert b'apple-touch-icon' in r.data, f"{route} missing apple-touch-icon link"
 
+    @pytest.mark.parametrize("route", ["/", "/projects", "/apps"])
+    def test_apple_touch_icon_has_sizes_attribute(self, client, route):
+        html = client.get(route).data.decode("utf-8")
+        m = re.search(r'<link rel="apple-touch-icon"[^>]*>', html)
+        assert m, f"{route} missing apple-touch-icon link"
+        assert 'sizes="180x180"' in m.group(), f"{route} apple-touch-icon missing sizes attribute"
+
+    @pytest.mark.parametrize("route", ["/", "/projects", "/apps"])
+    def test_og_image_present(self, client, route):
+        r = client.get(route)
+        assert b'og:image' in r.data, f"{route} missing og:image meta tag"
+
+    @pytest.mark.parametrize("route", ["/", "/projects", "/apps"])
+    def test_theme_color_present(self, client, route):
+        r = client.get(route)
+        assert b'theme-color' in r.data, f"{route} missing theme-color meta tag"
+
     @pytest.mark.parametrize("filename", [
         "favicon.svg", "favicon-16x16.png", "favicon-32x32.png",
         "favicon.ico", "apple-touch-icon.png",
@@ -100,6 +117,37 @@ class TestSEO:
     def test_favicon_asset_exists_on_disk(self, filename):
         path = os.path.join(os.path.dirname(__file__), "..", "static", filename)
         assert os.path.exists(path), f"Missing favicon asset: static/{filename}"
+
+
+# ── Standalone tool pages ──────────────────────────────────────────────────────
+
+class TestStandalonePages:
+    """
+    The 4 standalone tool pages (calculator, geolocation, deciscope, benchmark)
+    don't extend base.html — they're plain HTML files living 4 directories below
+    the repo root (static_pages/projects/misc/<tool>/index.html). Their hrefs to
+    /static/ must use exactly 4 levels of '../' to resolve correctly outside of a
+    browser's path-clamping behavior (e.g. file:// viewing, or any tool that does
+    literal filesystem resolution).
+    """
+    TOOL_DIRS = [
+        "calculator", "geolocation", "deciscope", "advanced_browser_system_benchmark",
+    ]
+
+    @pytest.mark.parametrize("tool", TOOL_DIRS)
+    def test_static_asset_paths_resolve_to_repo_root(self, tool):
+        repo_root = os.path.join(os.path.dirname(__file__), "..")
+        html_path = os.path.join(repo_root, "static_pages", "projects", "misc", tool, "index.html")
+        html_dir = os.path.dirname(html_path)
+        src = open(html_path, encoding="utf-8").read()
+
+        for m in re.finditer(r'href="(\.\./[^"]+/static/[^"]+)"', src):
+            href = m.group(1)
+            resolved = os.path.normpath(os.path.join(html_dir, href))
+            assert os.path.exists(resolved), (
+                f"{tool}/index.html: href=\"{href}\" does not resolve to an existing "
+                f"file on disk ({resolved}) — wrong number of '../' segments"
+            )
 
 
 # ── Security / link hygiene ───────────────────────────────────────────────────
@@ -234,6 +282,13 @@ class TestBuild:
 
     def test_favicon_copied_to_site_root(self):
         assert (self.out / "favicon.ico").exists(), "favicon.ico missing from docs root"
+
+    def test_robots_txt_copied_to_site_root(self):
+        assert (self.out / "robots.txt").exists(), "robots.txt missing from docs root"
+
+    def test_robots_txt_references_sitemap(self):
+        robots = (self.out / "robots.txt").read_text()
+        assert "Sitemap: https://khansaqib.com/sitemap.xml" in robots
 
     def test_cname_contains_correct_domain(self):
         assert (self.out / "CNAME").read_text().strip() == "khansaqib.com"

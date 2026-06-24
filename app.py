@@ -1,7 +1,14 @@
 import os
+import datetime
 from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def inject_current_year():
+    return {"current_year": datetime.date.today().year}
+
 
 # --- PERSONAL DATA ---
 BIO = {

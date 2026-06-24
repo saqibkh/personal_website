@@ -7,6 +7,7 @@ Run with: pytest tests/ -v
 import re
 import sys
 import os
+import datetime
 import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -148,6 +149,57 @@ class TestStandalonePages:
                 f"{tool}/index.html: href=\"{href}\" does not resolve to an existing "
                 f"file on disk ({resolved}) — wrong number of '../' segments"
             )
+
+    @pytest.mark.parametrize("tool", TOOL_DIRS)
+    def test_mobile_menu_toggle_is_keyboard_accessible(self, tool):
+        repo_root = os.path.join(os.path.dirname(__file__), "..")
+        html_path = os.path.join(repo_root, "static_pages", "projects", "misc", tool, "index.html")
+        src = open(html_path, encoding="utf-8").read()
+        m = re.search(r'<div class="menu-toggle"[^>]*>', src)
+        assert m, f"{tool}/index.html missing mobile menu toggle"
+        tag = m.group()
+        assert 'role="button"' in tag, f"{tool}: menu toggle missing role=button"
+        assert 'tabindex="0"' in tag, f"{tool}: menu toggle missing tabindex=0 (not keyboard-focusable)"
+        assert 'aria-label=' in tag, f"{tool}: menu toggle missing aria-label"
+        assert 'aria-expanded=' in tag, f"{tool}: menu toggle missing aria-expanded"
+
+    @pytest.mark.parametrize("tool", TOOL_DIRS)
+    def test_mobile_menu_has_keydown_handler(self, tool):
+        repo_root = os.path.join(os.path.dirname(__file__), "..")
+        html_path = os.path.join(repo_root, "static_pages", "projects", "misc", tool, "index.html")
+        src = open(html_path, encoding="utf-8").read()
+        assert "addEventListener('keydown'" in src, (
+            f"{tool}: menu toggle has no keydown handler — Enter/Space won't open it"
+        )
+
+    @pytest.mark.parametrize("tool", TOOL_DIRS)
+    def test_copyright_year_is_dynamic(self, tool):
+        repo_root = os.path.join(os.path.dirname(__file__), "..")
+        html_path = os.path.join(repo_root, "static_pages", "projects", "misc", tool, "index.html")
+        src = open(html_path, encoding="utf-8").read()
+        assert 'id="copyrightYear"' in src, f"{tool}: copyright year is not in a JS-updatable span"
+        assert "getFullYear()" in src, f"{tool}: no JS updates the copyright year at runtime"
+
+
+# ── Accessibility (main pages) ─────────────────────────────────────────────────
+
+class TestAccessibility:
+    @pytest.mark.parametrize("route", ["/", "/projects", "/apps"])
+    def test_mobile_menu_toggle_is_keyboard_accessible(self, client, route):
+        html = client.get(route).data.decode("utf-8")
+        m = re.search(r'<div class="menu-toggle"[^>]*>', html)
+        assert m, f"{route} missing mobile menu toggle"
+        tag = m.group()
+        assert 'role="button"' in tag, f"{route}: menu toggle missing role=button"
+        assert 'tabindex="0"' in tag, f"{route}: menu toggle missing tabindex=0"
+        assert 'aria-label=' in tag, f"{route}: menu toggle missing aria-label"
+        assert 'aria-expanded=' in tag, f"{route}: menu toggle missing aria-expanded"
+
+    @pytest.mark.parametrize("route", ["/", "/projects", "/apps"])
+    def test_copyright_shows_current_year(self, client, route):
+        html = client.get(route).data.decode("utf-8")
+        current_year = str(datetime.date.today().year)
+        assert current_year in html, f"{route}: copyright does not show current year {current_year}"
 
 
 # ── Security / link hygiene ───────────────────────────────────────────────────

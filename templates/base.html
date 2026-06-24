@@ -37,7 +37,7 @@
     <nav class="navbar">
         <div class="logo">SAQIB KHAN</div>
         
-        <div class="menu-toggle" id="mobile-menu">
+        <div class="menu-toggle" id="mobile-menu" role="button" tabindex="0" aria-label="Toggle navigation menu" aria-expanded="false">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
@@ -59,7 +59,7 @@
             <p>Open for opportunities in software development and technical consulting.</p>
             <a href="mailto:saqibkhan@utexas.edu" class="email-link">saqibkhan@utexas.edu</a>
             <div class="copyright">
-                &copy; 2026 Khan Saqib. All rights reserved.
+                &copy; {{ current_year }} Khan Saqib. All rights reserved.
             </div>
         </div>
     </footer>
@@ -68,9 +68,18 @@
         const menuToggle = document.getElementById('mobile-menu');
         const navLinks = document.querySelector('.nav-links');
 
+        function toggleMenu() {
+            const isOpen = navLinks.classList.toggle('active');
+            menuToggle.setAttribute('aria-expanded', isOpen);
+        }
+
         if (menuToggle) {
-            menuToggle.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
+            menuToggle.addEventListener('click', toggleMenu);
+            menuToggle.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleMenu();
+                }
             });
         }
 
@@ -78,6 +87,7 @@
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
             });
         });
     </script>

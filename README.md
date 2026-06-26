@@ -1,5 +1,8 @@
 # Saqib Khan - Personal Portfolio & Tools
 
+[![Tests](https://github.com/saqibkh/personal_website/actions/workflows/test.yml/badge.svg)](https://github.com/saqibkh/personal_website/actions/workflows/test.yml)
+[![Build and Deploy](https://github.com/saqibkh/personal_website/actions/workflows/deploy.yml/badge.svg)](https://github.com/saqibkh/personal_website/actions/workflows/deploy.yml)
+
 This repository hosts the source code for my personal portfolio website, **[khansaqib.com](https://khansaqib.com)**. It serves as a central hub for my engineering projects, professional experience, and a suite of interactive web-based tools.
 
 ## 🚀 Overview
@@ -26,11 +29,12 @@ The site is built as a **hybrid Flask application**. It functions as a dynamic F
 ## 📂 Project Structure
 
 ```text
-├── .github/workflows/   # CI/CD Pipeline configuration
-├── docs/                # Generated static site (Public folder for GitHub Pages)
-├── static/              # Global assets (CSS, Images)
-├── static_pages/        # Standalone web tools (Calculators, Benchmarks)
-├── templates/           # Flask HTML templates (Base, Index, Projects)
+├── .github/workflows/   # CI/CD pipeline configuration (test.yml, deploy.yml)
+├── docs/                # Generated static site (public folder for GitHub Pages)
+├── static/              # Global assets (CSS, images, favicons)
+├── static_pages/        # Standalone web tools (Calculator, Benchmark, etc.) + robots.txt
+├── templates/           # Flask HTML templates (Base, Index, Projects, Apps)
+├── tests/               # pytest test suite
 ├── app.py               # Main Flask application logic
 ├── build.py             # Static site generator script
 └── requirements.txt     # Python dependencies
@@ -42,7 +46,7 @@ To run the website locally on your machine:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/saqibkh/personal_website.git](https://github.com/saqibkh/personal_website.git)
+    git clone https://github.com/saqibkh/personal_website.git
     cd personal_website
     ```
 
@@ -57,23 +61,36 @@ To run the website locally on your machine:
     ```
 
 4.  **View in Browser:**
-    Open `http://127.0.0.1:5000` to see the dynamic version.
+    Open `http://127.0.0.1:5001` to see the dynamic version. (Override the port with the `PORT` environment variable if 5001 is in use.)
 
+## ✅ Running Tests
 
+The project has a pytest suite covering Flask routes, SEO meta tags, accessibility, data integrity, and the static build script.
+
+```bash
+pytest tests/ -v
+```
+
+To check test coverage (CI requires at least 80%):
+```bash
+pytest tests/ --cov=app --cov=build --cov-report=term-missing
+```
 
 ## 🚀 Deployment (CI/CD)
 
-Deployment is fully automated. When code is pushed to the `main` branch, the **GitHub Actions** workflow triggers:
+Deployment is fully automated across two workflows:
 
-1.  Sets up a Python environment.
-2.  Runs `build.py` to:
+* **`test.yml`** runs the pytest suite (with a coverage gate) on every push to a feature branch and on every pull request targeting `main`.
+* **`deploy.yml`** runs on every push to `main`: it re-runs the test suite as a safety gate, then — only if tests pass — runs `build.py` to:
     * Render Flask templates into static HTML.
-    * Copy standalone projects and assets.
-    * Generate `sitemap.xml` and `CNAME` records.
-3.  Commits the generated files to the `/docs` folder.
-4.  GitHub Pages serves the content from `/docs`.
+    * Copy standalone projects, assets, and `robots.txt`.
+    * Generate `favicon.ico`, `sitemap.xml`, and the `CNAME` record.
+    * Commit the generated files to the `/docs` folder.
+
+GitHub Pages serves the content from `/docs`. Both workflows can also be triggered manually from the **Actions** tab via `workflow_dispatch`.
 
 **Manual Build:**
 You can manually trigger a build locally by running:
 ```bash
 python build.py
+```

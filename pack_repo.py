@@ -1,8 +1,8 @@
 import os
 
 # Files to ignore (compiled files, git, images, etc.)
-IGNORE_DIRS = {'.git', '__pycache__', 'assets', 'venv', 'env'}
-IGNORE_EXTENSIONS = {'.pyc', '.jpg', '.png', '.mp3', '.wav', '.zip', '.exe'}
+IGNORE_DIRS = {'.git', '__pycache__', 'assets', 'venv', 'env', '.venv', 'docs', '.pytest_cache'}
+IGNORE_EXTENSIONS = {'.pyc', '.jpg', '.png', '.mp3', '.wav', '.zip', '.exe', '.ico'}
 
 def pack_repo():
     output_filename = "full_codebase.txt"

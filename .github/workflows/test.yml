@@ -2,9 +2,14 @@ name: Tests
 
 on:
   push:
-    branches: ['**']        # Run on every branch push
+    branches-ignore: [main]   # main is already covered by deploy.yml's own test job
   pull_request:
-    branches: [main]        # Required to pass before merging to main
+    branches: [main]          # required check before merging
+  workflow_dispatch:           # allow manual runs from the Actions tab
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true     # superseded runs on the same branch get cancelled
 
 jobs:
   test:
@@ -25,8 +30,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest tests/ -v --tb=short
-
-      - name: Run tests with coverage report
-        run: pytest tests/ --cov=app --cov=build --cov-report=term-missing --cov-fail-under=80
+      - name: Run tests with coverage
+        run: pytest tests/ -v --tb=short --cov=app --cov=build --cov-report=term-missing --cov-fail-under=80

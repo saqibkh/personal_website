@@ -79,6 +79,22 @@ class TestSEO:
         r = client.get(route)
         assert b'rel="canonical"' in r.data, f"{route} missing canonical link"
 
+    @pytest.mark.parametrize("route,expected_path", [
+        ("/", "/"), ("/projects", "/projects"), ("/apps", "/apps"),
+    ])
+    def test_canonical_and_og_url_match_actual_route(self, client, route, expected_path):
+        html = client.get(route).data.decode("utf-8")
+        expected_url = f"https://khansaqib.com{expected_path}"
+        canonical = re.search(r'rel="canonical" href="([^"]+)"', html)
+        og_url = re.search(r'og:url" content="([^"]+)"', html)
+        assert canonical and canonical.group(1) == expected_url, (
+            f"{route}: canonical should be {expected_url}, got {canonical.group(1) if canonical else None} "
+            f"— every page pointing at the same canonical tells search engines they're duplicates"
+        )
+        assert og_url and og_url.group(1) == expected_url, (
+            f"{route}: og:url should be {expected_url}, got {og_url.group(1) if og_url else None}"
+        )
+
     @pytest.mark.parametrize("route", ["/", "/projects", "/apps"])
     def test_page_title_contains_name(self, client, route):
         r = client.get(route)
